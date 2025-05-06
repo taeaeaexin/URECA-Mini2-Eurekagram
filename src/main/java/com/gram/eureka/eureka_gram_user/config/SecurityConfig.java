@@ -2,7 +2,7 @@ package com.gram.eureka.eureka_gram_user.config;
 
 import com.gram.eureka.eureka_gram_user.filter.JwtAuthenticationFilter;
 import com.gram.eureka.eureka_gram_user.service.impl.CustomUserDetailsServiceImpl;
-import com.gram.eureka.eureka_gram_user.util.CustomAuthenticationEntryPointUtil;
+import com.gram.eureka.eureka_gram_user.util.AuthExceptionHandlerUtil;
 import com.gram.eureka.eureka_gram_user.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -23,24 +23,24 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private final JwtUtil jwtUtil;
     private final CustomUserDetailsServiceImpl customUserDetailsServiceImpl;
-    private final CustomAuthenticationEntryPointUtil customAuthenticationEntryPointUtil;
+    private final AuthExceptionHandlerUtil authExceptionHandlerUtil;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // 화이트리스트 (인증 없이 접근 허용할 경로)
         String[] whiteList = {
                 "/",
-                "/users/**",
                 "/login",
+                "/users/**",
                 "/page/**",
 
                 "/css/**",
                 "/html/**",
-                "/image/**",
+                "/images/**",
                 "/js/**",
 
-                "index.html",
-                "favicon.ico"
+                "/index.html",
+                "/favicon.ico"
         };
 
         // 블랙리스트 (인증 필요, 추가적인 제한 걸 경로 – 예: 관리자 등급)
@@ -73,7 +73,7 @@ public class SecurityConfig {
 
                 // 인증 실패시에 로그인 페이지로 이동 설정
                 .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(customAuthenticationEntryPointUtil) // 등록
+                        .authenticationEntryPoint(authExceptionHandlerUtil) // 등록
                 )
 
                 // JWT 인증 필터를 UsernamePasswordAuthenticationFilter 전에 등록

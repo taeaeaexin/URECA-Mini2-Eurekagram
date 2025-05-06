@@ -27,6 +27,18 @@ public class UserController {
         // TODO 이메일 중복 체크 필요
         // 위 조건에서 문제있는 경우 statusCode, message 값 따로 설정해서 반환
 
+        /**
+         * {
+         *   "userName": "서보인",
+         *   "email": "sbi1024@naver.com",
+         *   "password": "1234",
+         *   "nickName": "길동이",
+         *   "batch": "FIRST",
+         *   "track": "BACKEND",
+         *   "mode": "ONLINE"
+         * }
+         */
+
         return userService.join(userRequestDto);
     }
 }
