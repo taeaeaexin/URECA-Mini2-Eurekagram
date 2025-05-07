@@ -8,11 +8,14 @@
 # ✨ 팀원 소개
 ## 팀원 소개
 
-| 이름  | MBTI | 사진                                                   | GitHub                                   | 역할 | 파트               |
-|-----|------|------------------------------------------------------|------------------------------------------|----|------------------|
-| 서보인 | ESFJ | ![](https://avatars.githubusercontent.com/u/0000001) | [@sbi1024](https://github.com/sbi1024) | 팀장 | BackEnd/FrontEnd |
-| 문태신 |      | ![](https://avatars.githubusercontent.com/u/0000002) | [@taeaeaexin](https://github.com/taeaeaexin)| 팀원 | BackEnd/FrontEnd |
-| 박소연 |      | ![](https://avatars.githubusercontent.com/u/0000003) | [@so-yeon1](https://github.com/so-yeon1) | 팀원 | BackEnd/FrontEnd |
+# ✨ 팀원 소개
+## 팀원 소개
+
+| 이름   | MBTI | 사진                                                       | GitHub                                        | 역할 | 파트               |
+|--------|------|------------------------------------------------------------|-----------------------------------------------|------|--------------------|
+| 서보인 | ESFJ | <img src="https://avatars.githubusercontent.com/u/0000001" width="80"/> | [@sbi1024](https://github.com/sbi1024)        | 팀장 | BackEnd/FrontEnd   |
+| 문태신 |      | <img src="https://avatars.githubusercontent.com/u/0000002" width="80"/> | [@taeaeaexin](https://github.com/taeaeaexin)  | 팀원 | BackEnd/FrontEnd   |
+| 박소연 |      | <img src="https://avatars.githubusercontent.com/u/0000003" width="80"/> | [@so-yeon1](https://github.com/so-yeon1)      | 팀원 | BackEnd/FrontEnd   |
 
 
 # ✨ 필요한 기능
