@@ -11,6 +11,7 @@ public class UserRequestDto {
     private String email; // 로그인시 사용할 이메일 (중복 체크 필요)
     private String password; // 로그인시 사용할 비밀번호
     private String nickName; // 로그인 이후 사용자 화면에 표시될 닉네임
+    private String phoneNumber; // 휴대폰 번호
     private Batch batch; // 기수
     private Track track; // 구분
     private Mode mode; // 방식

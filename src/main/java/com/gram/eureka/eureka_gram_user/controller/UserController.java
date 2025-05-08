@@ -33,6 +33,7 @@ public class UserController {
          *   "email": "sbi1024@naver.com",
          *   "password": "1234",
          *   "nickName": "길동이",
+         *   "phoneNumber": "01024685986",
          *   "batch": "FIRST",
          *   "track": "BACKEND",
          *   "mode": "ONLINE"

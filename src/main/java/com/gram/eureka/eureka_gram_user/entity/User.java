@@ -21,6 +21,7 @@ public class User extends BaseEntity {
     private String email; // 로그인시 사용할 이메일 (중복 체크 필요)
     private String password; // 로그인시 사용할 비밀번호
     private String nickName; // 로그인 이후 사용자 화면에 표시될 닉네임
+    private String phoneNumber; // 휴대폰 번호
     @Enumerated(EnumType.STRING)
     private Batch batch; // 기수
     @Enumerated(EnumType.STRING)
@@ -39,6 +40,7 @@ public class User extends BaseEntity {
                 .email(userRequestDto.getEmail())
                 .password(userRequestDto.getPassword())
                 .nickName(userRequestDto.getNickName())
+                .phoneNumber(userRequestDto.getPhoneNumber())
                 .batch(userRequestDto.getBatch())
                 .track(userRequestDto.getTrack())
                 .mode(userRequestDto.getMode())
