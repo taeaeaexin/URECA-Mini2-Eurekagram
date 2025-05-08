@@ -1,21 +1,96 @@
 package com.gram.eureka.eureka_gram_user.init;
 
+import com.gram.eureka.eureka_gram_user.entity.Comment;
+import com.gram.eureka.eureka_gram_user.entity.Feed;
+import com.gram.eureka.eureka_gram_user.entity.Image;
 import com.gram.eureka.eureka_gram_user.entity.User;
 import com.gram.eureka.eureka_gram_user.entity.enums.*;
+import com.gram.eureka.eureka_gram_user.repository.CommentRepository;
+import com.gram.eureka.eureka_gram_user.repository.FeedRepository;
+import com.gram.eureka.eureka_gram_user.repository.ImageRepository;
 import com.gram.eureka.eureka_gram_user.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 @RequiredArgsConstructor
 public class TestDataLoader {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CommentRepository commentRepository;
+    private final FeedRepository feedRepository;
+    private final ImageRepository imageRepository;
 
     @PostConstruct
     public void init() {
+        createUser();
+        createFeed();
+    }
+
+    // 피드 데이터 생성
+    public void createFeed() {
+        Optional<User> user = userRepository.findById(1L);
+
+        Feed feed1 = Feed.builder()
+                .title("테스트1 피드 입니다.")
+                .content("테스트1 컨텐트 입니다.")
+                .user(user.get())
+                .build();
+
+        Feed feed2 = Feed.builder()
+                .title("테스트2 피드 입니다.")
+                .content("테스트2 컨텐트 입니다.")
+                .user(user.get())
+                .build();
+
+        Image image1 = Image.builder()
+                .feed(feed1)
+                .originalImageName("테스트1-피드1 이미지")
+                .storedImageName("랜덤 이미지 데이터1")
+                .imageExtension(".png")
+                .build();
+
+        Image image2 = Image.builder()
+                .feed(feed1)
+                .originalImageName("테스트2-피드2 이미지")
+                .storedImageName("랜덤 이미지 데이터2")
+                .imageExtension(".png")
+                .build();
+
+        Comment comment1 = Comment.builder()
+                .feed(feed1)
+                .user(user.get())
+                .content("테스트 댓글1")
+                .build();
+
+        Comment comment2 = Comment.builder()
+                .feed(feed1)
+                .user(user.get())
+                .content("테스트 댓글2")
+                .build();
+
+        Comment comment3 = Comment.builder()
+                .feed(feed1)
+                .user(user.get())
+                .content("테스트 댓글3")
+                .build();
+
+
+        feedRepository.save(feed1);
+        feedRepository.save(feed2);
+        imageRepository.save(image1);
+        imageRepository.save(image2);
+        commentRepository.save(comment1);
+        commentRepository.save(comment2);
+        commentRepository.save(comment3);
+    }
+
+    // 사용자 정보 데이터 생성
+    public void createUser() {
         // ACTIVE 사용자 3명
         for (int i = 1; i <= 3; i++) {
             User user = User.builder()
