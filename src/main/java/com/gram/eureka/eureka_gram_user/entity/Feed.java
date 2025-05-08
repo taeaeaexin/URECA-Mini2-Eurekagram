@@ -19,7 +19,7 @@ public class Feed extends BaseEntity {
     private String title; // 피드 제목
     private String content; // 피드 내용
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
     private Status status; // 상태 관리
