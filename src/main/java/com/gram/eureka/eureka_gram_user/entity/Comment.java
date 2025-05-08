@@ -25,5 +25,6 @@ public class Comment extends BaseEntity {
 
     private String content; // 댓글 내용
 
+    @Enumerated(EnumType.STRING)
     private Status status; // 상태 관리
 }

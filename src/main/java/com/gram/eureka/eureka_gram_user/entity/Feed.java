@@ -22,5 +22,6 @@ public class Feed extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
+    @Enumerated(EnumType.STRING)
     private Status status; // 상태 관리
 }
