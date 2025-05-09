@@ -2,6 +2,7 @@ package com.gram.eureka.eureka_gram_user.service.impl;
 
 import com.gram.eureka.eureka_gram_user.dto.FeedRequestDto;
 import com.gram.eureka.eureka_gram_user.dto.FeedResponseDto;
+import com.gram.eureka.eureka_gram_user.dto.MyFeedDto;
 import com.gram.eureka.eureka_gram_user.entity.Feed;
 import com.gram.eureka.eureka_gram_user.entity.Image;
 import com.gram.eureka.eureka_gram_user.entity.User;
@@ -68,4 +69,19 @@ public class FeedServiceImpl implements FeedService {
         feedResponseDto.setFeedId(feed.getId());
         return feedResponseDto;
     }
+
+//    @Override
+//    public List<MyFeedDto> myFeed() {
+//        // User 엔티티 생성 > Jwt 토큰으로부터 정보 추출 및 findByEmail 실행
+//        String email = SecurityContextHolder.getContext().getAuthentication().getName(); // 기본적으로 username 반환
+//        User user = userRepository.findByEmail(email).orElseThrow(
+//                () -> new UsernameNotFoundException("User not found")
+//        );
+//
+//        List<Feed> feeds = feedRepository.findByUser(user);
+//
+//
+//        return List.of();
+//    }
+
 }
