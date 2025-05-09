@@ -5,4 +5,5 @@ import com.gram.eureka.eureka_gram_user.dto.FeedResponseDto;
 
 public interface FeedService {
     FeedResponseDto createFeed(FeedRequestDto feedRequestDto);
+    FeedResponseDto detailFeed(Long id);
 }

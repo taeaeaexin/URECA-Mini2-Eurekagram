@@ -7,10 +7,7 @@ import com.gram.eureka.eureka_gram_user.service.FeedService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @Controller
@@ -39,5 +36,14 @@ public class FeedController {
                 .message("success")
                 .data(feed)
                 .build();
+    }
+
+    @GetMapping("/{id}")
+    @ResponseBody
+    public void detailFeed(@PathVariable Long id) {
+        log.info("detailFeed id :{}",id);
+
+        feedService.detailFeed(id);
+
     }
 }

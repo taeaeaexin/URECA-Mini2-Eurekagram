@@ -2,10 +2,12 @@ package com.gram.eureka.eureka_gram_user.service.impl;
 
 import com.gram.eureka.eureka_gram_user.dto.FeedRequestDto;
 import com.gram.eureka.eureka_gram_user.dto.FeedResponseDto;
+import com.gram.eureka.eureka_gram_user.entity.Comment;
 import com.gram.eureka.eureka_gram_user.entity.Feed;
 import com.gram.eureka.eureka_gram_user.entity.Image;
 import com.gram.eureka.eureka_gram_user.entity.User;
 import com.gram.eureka.eureka_gram_user.entity.enums.Status;
+import com.gram.eureka.eureka_gram_user.repository.CommentRepository;
 import com.gram.eureka.eureka_gram_user.repository.FeedRepository;
 import com.gram.eureka.eureka_gram_user.repository.ImageRepository;
 import com.gram.eureka.eureka_gram_user.repository.UserRepository;
@@ -27,6 +29,7 @@ public class FeedServiceImpl implements FeedService {
     private final UserRepository userRepository;
     private final ImageRepository imageRepository;
     private final ImageUtil imageUtil;
+    private final CommentRepository commentRepository;
 
     @Override
     public FeedResponseDto createFeed(FeedRequestDto feedRequestDto) {
@@ -67,5 +70,16 @@ public class FeedServiceImpl implements FeedService {
         FeedResponseDto feedResponseDto = new FeedResponseDto();
         feedResponseDto.setFeedId(feed.getId());
         return feedResponseDto;
+    }
+
+    @Override
+    public FeedResponseDto detailFeed(Long id) {
+        Feed feed = feedRepository.findByFeedId(id).orElseThrow();
+        List<Image> images = imageRepository.findByFeed(feed);
+        List<Comment> comments = commentRepository.findCommentByFeed(feed);
+
+
+
+        return null;
     }
 }
