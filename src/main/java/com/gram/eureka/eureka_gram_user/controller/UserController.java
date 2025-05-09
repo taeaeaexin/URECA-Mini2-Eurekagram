@@ -19,9 +19,6 @@ public class UserController {
     @PostMapping
     public BaseResponseDto<UserResponseDto> join(@RequestBody UserRequestDto userRequestDto) {
         log.info("회원 가입 입니다. 현재 요청된 데이터는 다음과 같습니다 : {}", userRequestDto);
-        // TODO 닉네임 중복 체크 필요
-        // TODO 이메일 중복 체크 필요
-        // 위 조건에서 문제있는 경우 statusCode, message 값 따로 설정해서 반환
 
         /**
          * {
