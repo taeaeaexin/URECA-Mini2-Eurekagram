@@ -1,3 +1,24 @@
-h1 {
+
+body {
+    font-family: Arial, sans-serif;
+    padding: 40px;
+    max-width: 400px;
+    margin: auto;
+}
+
+label, input {
+    display: block;
+    width: 100%;
+    margin-top: 16px;
+}
+
+button {
+    margin-top: 24px;
+    padding: 10px;
+    width: 100%;
+}
+
+.message {
+    margin-top: 16px;
     color: red;
 }
