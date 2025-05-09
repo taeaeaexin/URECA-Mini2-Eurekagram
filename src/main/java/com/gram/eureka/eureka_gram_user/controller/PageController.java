@@ -36,4 +36,9 @@ public class PageController {
     public String moveAddPostPAge() {
         return "/html/addPost";
     }
+
+    @GetMapping("/join")
+    public String moveJoinPage() {
+        return "/html/join";
+    }
 }

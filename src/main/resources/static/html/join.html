@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="/css/main.css" rel="stylesheet">
+    <title>Main</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            max-width: 500px;
+            margin: auto;
+        }
+
+        input {
+            display: block;
+            width: 100%;
+            margin-top: 16px;
+        }
+
+        button {
+            margin-top: 24px;
+            padding: 10px;
+            width: 100%;
+        }
+
+        .message {
+            margin-top: 16px;
+            color: red;
+        }
+    </style>
+
+</head>
+<body class="hidden">
+<h1 id="welcome">join.html</h1>
+
+<div>
+    <input type="text" name="userName" id="userName" placeholder="이름">
+</div>
+<div>
+    <input type="text" name="email" id="email" placeholder="Email">
+</div>
+<div>
+    <input type="password" name="password" id="password" placeholder="비밀번호">
+</div>
+<div>
+    <input type="password" name="passwordcheck" id="passwordcheck" placeholder="비밀번호 확인">
+</div>
+<div>
+    <input type="text" name="nickName" id="nickName" placeholder="닉네임">
+</div>
+<div>
+    <input type="text" name="phoneNumber" id="phoneNumber" placeholder="전화번호">
+</div>
+
+<div>
+    <label for="track">백엔드/프론트:</label>
+    <select id="track" name="track">
+        <option value="BACKEND">백엔드</option>
+        <option value="FRONTEND">프론트엔드</option>
+    </select>
+
+    <label for="mode">대면/비대면:</label>
+    <select id="mode" name="mode">
+        <option value="OFFLINE">대면</option>
+        <option value="ONLINE">비대면</option>
+    </select>
+
+    <label for="batch">기수:</label>
+    <select id="batch" name="batch">
+        <option value="FIRST">1기</option>
+        <option value="SECOND">2기</option>
+        <option value="THIRD">3기</option>
+        <option value="FOURTH">4기</option>
+        <option value="FIFTH">5기</option>
+        <option value="SIXTH">6기</option>
+        <option value="SEVENTH">7기</option>
+        <option value="EIGHTH">8기</option>
+        <option value="NINTH">9기</option>
+        <option value="TENTH">10기</option>
+    </select>
+</div>
+<!-- Add hidden input for CSRF token -->
+<!-- id 는 _ 시작 X -->
+<input type="hidden" name="_csrf" value="" id="_csrf">
+
+<div>
+    <button id="btnJoin" onclick="join()">회원가입</button>
+    <button id="btnBack" onclick="back()">취소</button>
+</div>
+
+<script>
+    // 회원가입
+    async function join() {
+        const userName = document.getElementById("userName").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const passwordcheck = document.getElementById("passwordcheck").value;
+        const nickName = document.getElementById("nickName").value;
+        const phoneNumber = document.getElementById("phoneNumber").value;
+        const track = document.getElementById("track").value;
+        const mode = document.getElementById("mode").value;
+        const batch = document.getElementById("batch").value;
+
+
+        const response = await fetch("/users", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ userName, email, password, nickName, phoneNumber, track, mode, batch })
+        });
+
+        const result = await response.json();
+
+        if (result.statusCode === 200) {
+            window.location.href = "/"
+        } else {
+            alert(result.message)
+        }
+    }
+
+    // 취소 (로그인 화면으로)
+    function back(){
+        window.location.href = "/"
+    }
+</script>
+</body>
+</html>
