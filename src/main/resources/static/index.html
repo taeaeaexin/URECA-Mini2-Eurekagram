@@ -20,7 +20,7 @@
 
         <button onclick="login()">로그인</button>
 
-        <button class="signup">회원가입</button>
+        <button onclick="join()">회원가입</button>
     </div>
 </div>
 
@@ -47,6 +47,11 @@
             alert("ID 혹은 PW를 확인해 주세요.")
         }
     }
+
+    async function join() {
+        window.location.href="/page/join"
+    }
+
 </script>
 </body>
 </html>
