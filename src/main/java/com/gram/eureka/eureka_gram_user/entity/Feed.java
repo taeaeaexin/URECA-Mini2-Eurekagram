@@ -16,7 +16,6 @@ public class Feed extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String title; // 피드 제목
     private String content; // 피드 내용
 
     @ManyToOne(fetch = FetchType.LAZY)
