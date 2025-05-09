@@ -41,4 +41,9 @@ public class PageController {
     public String moveDetailFeedPage() {
         return "/html/detail-feed";
     }
+
+    @GetMapping("/join")
+    public String moveJoinPage() {
+        return "/html/join";
+    }
 }
