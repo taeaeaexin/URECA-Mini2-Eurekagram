@@ -5,5 +5,6 @@ import com.gram.eureka.eureka_gram_user.repository.custom.UserRepositoryCustom;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<User, Long>, UserRepositoryCustom {
-
+    boolean existsByEmail(String email);
+    boolean existsByNickName(String nickname);
 }
