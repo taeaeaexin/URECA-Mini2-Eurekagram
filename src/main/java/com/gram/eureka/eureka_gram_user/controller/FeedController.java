@@ -1,14 +1,14 @@
 package com.gram.eureka.eureka_gram_user.controller;
 
-import com.gram.eureka.eureka_gram_user.dto.BaseResponseDto;
-import com.gram.eureka.eureka_gram_user.dto.FeedRequestDto;
-import com.gram.eureka.eureka_gram_user.dto.FeedResponseDto;
+import com.gram.eureka.eureka_gram_user.dto.*;
 import com.gram.eureka.eureka_gram_user.service.FeedService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -38,10 +38,10 @@ public class FeedController {
                 .build();
     }
 
-//    @GetMapping("/my")
-//    @ResponseBody
-//    public BaseResponseDto<FeedResponseDto> myFeed() {
-//
-//
-//    }
+    @GetMapping("/my")
+    @ResponseBody
+    public BaseResponseDto<MyFeedResponseDto> myFeed() {
+        log.info(feedService.myFeed().getData().toString());
+        return feedService.myFeed();
+    }
 }

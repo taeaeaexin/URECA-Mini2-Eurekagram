@@ -1,8 +1,6 @@
 package com.gram.eureka.eureka_gram_user.service.impl;
 
-import com.gram.eureka.eureka_gram_user.dto.FeedRequestDto;
-import com.gram.eureka.eureka_gram_user.dto.FeedResponseDto;
-import com.gram.eureka.eureka_gram_user.dto.MyFeedDto;
+import com.gram.eureka.eureka_gram_user.dto.*;
 import com.gram.eureka.eureka_gram_user.entity.Feed;
 import com.gram.eureka.eureka_gram_user.entity.Image;
 import com.gram.eureka.eureka_gram_user.entity.User;
@@ -13,6 +11,7 @@ import com.gram.eureka.eureka_gram_user.repository.UserRepository;
 import com.gram.eureka.eureka_gram_user.service.FeedService;
 import com.gram.eureka.eureka_gram_user.util.ImageUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -23,6 +22,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class FeedServiceImpl implements FeedService {
     private final FeedRepository feedRepository;
     private final UserRepository userRepository;
@@ -70,18 +70,36 @@ public class FeedServiceImpl implements FeedService {
         return feedResponseDto;
     }
 
-//    @Override
-//    public List<MyFeedDto> myFeed() {
-//        // User 엔티티 생성 > Jwt 토큰으로부터 정보 추출 및 findByEmail 실행
-//        String email = SecurityContextHolder.getContext().getAuthentication().getName(); // 기본적으로 username 반환
-//        User user = userRepository.findByEmail(email).orElseThrow(
-//                () -> new UsernameNotFoundException("User not found")
-//        );
-//
-//        List<Feed> feeds = feedRepository.findByUser(user);
-//
-//
-//        return List.of();
-//    }
+    @Override
+    public BaseResponseDto<MyFeedResponseDto> myFeed() {
+        // User 엔티티 생성 > Jwt 토큰으로부터 정보 추출 및 findByEmail 실행
+        String email = SecurityContextHolder.getContext().getAuthentication().getName(); // 기본적으로 username 반환
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException("User not found")
+        );
+
+        try {
+            List<MyFeedDto> feeds = feedRepository.findFeedByUser(user); // (feed_id, image name) 리스트
+            int count = feeds.size();
+            MyFeedResponseDto myFeedResponseDto = MyFeedResponseDto.builder()
+                                                                    .feeds(feeds)
+                                                                    .count(count)
+                                                                    .build();
+            log.info(feeds.toString());
+            return BaseResponseDto.<MyFeedResponseDto>builder()
+                    .statusCode(200)
+                    .message("피드 조회 성공")
+                    .data(myFeedResponseDto)
+                    .build();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return BaseResponseDto.<MyFeedResponseDto>builder()
+                    .statusCode(500)
+                    .message("피드 조회 실패")
+                    .data(null)
+                    .build();
+        }
+    }
 
 }
