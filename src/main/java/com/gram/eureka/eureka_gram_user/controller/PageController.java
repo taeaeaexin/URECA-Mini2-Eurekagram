@@ -1,11 +1,11 @@
 package com.gram.eureka.eureka_gram_user.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.security.core.Authentication;
 
 @Controller
 @RequestMapping("/page")
@@ -32,8 +32,13 @@ public class PageController {
         return "/html/main";
     }
 
-    @GetMapping("/addPost")
-    public String moveAddPostPAge() {
-        return "/html/addPost";
+    @GetMapping("/add-feed")
+    public String moveAddFeedPage() {
+        return "/html/add-feed";
+    }
+
+    @GetMapping("/detail-feed")
+    public String moveDetailFeedPage() {
+        return "/html/detail-feed";
     }
 }

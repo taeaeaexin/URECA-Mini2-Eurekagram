@@ -28,7 +28,7 @@ public class TestDataLoader {
     @PostConstruct
     public void init() {
         createUser();
-        createFeed();
+        // createFeed();
     }
 
     // 피드 데이터 생성
@@ -36,13 +36,11 @@ public class TestDataLoader {
         Optional<User> user = userRepository.findById(1L);
 
         Feed feed1 = Feed.builder()
-                .title("테스트1 피드 입니다.")
                 .content("테스트1 컨텐트 입니다.")
                 .user(user.get())
                 .build();
 
         Feed feed2 = Feed.builder()
-                .title("테스트2 피드 입니다.")
                 .content("테스트2 컨텐트 입니다.")
                 .user(user.get())
                 .build();
@@ -109,53 +107,53 @@ public class TestDataLoader {
             userRepository.save(user);
         }
 
-        // PENDING 사용자 2명
-        for (int i = 1; i <= 2; i++) {
-            User user = User.builder()
-                    .userName("대기사용자" + i)
-                    .email("pending" + i + "@naver.com")
-                    .password(passwordEncoder.encode("1234"))
-                    .nickName("pending_user" + i)
-                    .phoneNumber("0102000" + String.format("%04d", i))
-                    .batch(Batch.SECOND)
-                    .track(Track.BACKEND)
-                    .mode(Mode.OFFLINE)
-                    .status(Status.PENDING)
-                    .role(Role.ROLE_USER)
-                    .build();
-
-            userRepository.save(user);
-        }
-
-        // INACTIVE 사용자 2명
-        for (int i = 1; i <= 2; i++) {
-            User user = User.builder()
-                    .userName("비활성사용자" + i)
-                    .email("inactive" + i + "@naver.com")
-                    .password(passwordEncoder.encode("1234"))
-                    .nickName("inactive_user" + i)
-                    .phoneNumber("0103000" + String.format("%04d", i))
-                    .batch(Batch.SECOND)
-                    .track(Track.BACKEND)
-                    .mode(Mode.OFFLINE)
-                    .status(Status.INACTIVE)
-                    .role(Role.ROLE_USER)
-                    .build();
-
-            userRepository.save(user);
-        }
-
-        // 관리자 1명
-        User admin = User.builder()
-                .userName("관리자")
-                .email("admin@naver.com")
-                .password(passwordEncoder.encode("1234"))
-                .nickName("test_admin")
-                .phoneNumber("01099998888")
-                .status(Status.ACTIVE)
-                .role(Role.ROLE_ADMIN)
-                .build();
-
-        userRepository.save(admin);
+//        // PENDING 사용자 2명
+//        for (int i = 1; i <= 2; i++) {
+//            User user = User.builder()
+//                    .userName("대기사용자" + i)
+//                    .email("pending" + i + "@naver.com")
+//                    .password(passwordEncoder.encode("1234"))
+//                    .nickName("pending_user" + i)
+//                    .phoneNumber("0102000" + String.format("%04d", i))
+//                    .batch(Batch.SECOND)
+//                    .track(Track.BACKEND)
+//                    .mode(Mode.OFFLINE)
+//                    .status(Status.PENDING)
+//                    .role(Role.ROLE_USER)
+//                    .build();
+//
+//            userRepository.save(user);
+//        }
+//
+//        // INACTIVE 사용자 2명
+//        for (int i = 1; i <= 2; i++) {
+//            User user = User.builder()
+//                    .userName("비활성사용자" + i)
+//                    .email("inactive" + i + "@naver.com")
+//                    .password(passwordEncoder.encode("1234"))
+//                    .nickName("inactive_user" + i)
+//                    .phoneNumber("0103000" + String.format("%04d", i))
+//                    .batch(Batch.SECOND)
+//                    .track(Track.BACKEND)
+//                    .mode(Mode.OFFLINE)
+//                    .status(Status.INACTIVE)
+//                    .role(Role.ROLE_USER)
+//                    .build();
+//
+//            userRepository.save(user);
+//        }
+//
+//        // 관리자 1명
+//        User admin = User.builder()
+//                .userName("관리자")
+//                .email("admin@naver.com")
+//                .password(passwordEncoder.encode("1234"))
+//                .nickName("test_admin")
+//                .phoneNumber("01099998888")
+//                .status(Status.ACTIVE)
+//                .role(Role.ROLE_ADMIN)
+//                .build();
+//
+//        userRepository.save(admin);
     }
 }

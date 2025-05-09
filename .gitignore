@@ -35,3 +35,8 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### user define ###
+/src/main/resources/static/images/**
+# 이미지 폴더는 유지
+!/src/main/resources/static/images/.gitkeep
