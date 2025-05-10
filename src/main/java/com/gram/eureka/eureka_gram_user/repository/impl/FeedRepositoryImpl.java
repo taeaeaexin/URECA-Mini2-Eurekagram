@@ -36,13 +36,12 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom {
                                                 JPAExpressions
                                                         .select(image.storedImageName)
                                                         .from(image)
-                                                        .where(image.feed.eq(feed)
-                                                                .and(image.id.eq(
+                                                        .where(image.id.eq(
                                                                         JPAExpressions
                                                                                 .select(image.id.min())
                                                                                 .from(image)
                                                                                 .where(image.feed.eq(feed))
-                                                                )))
+                                                                ))
 //                                                        .limit(1) // limit 누락???
                                                 , "imgName"
                                         )))
@@ -69,8 +68,7 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom {
  *
  * select feed.id, (select image.stored_image_name
  * 				from image
- *                 where feed.id = image.feed_id
- * 					and image.id = (select min(image.id)
+ *                 where image.id = (select min(image.id)
  * 									from image
  *                                     where feed.id = image.feed_id)
  *                )

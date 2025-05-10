@@ -8,8 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-
 @Controller
 @RequiredArgsConstructor
 @Slf4j
@@ -38,9 +36,9 @@ public class FeedController {
                 .build();
     }
 
-    @GetMapping("/my")
+    @GetMapping("/my-feed")
     @ResponseBody
-    public BaseResponseDto<MyFeedResponseDto> myFeed() {
+    public BaseResponseDto<MyFeedsResponseDto> myFeed() {
         log.info(feedService.myFeed().getData().toString());
         return feedService.myFeed();
     }

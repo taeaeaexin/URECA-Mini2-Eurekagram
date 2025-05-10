@@ -12,4 +12,3 @@ public class MyFeedDto {
     private Long feedId;
     private String imgName;
 }
-// feed 1 : img N

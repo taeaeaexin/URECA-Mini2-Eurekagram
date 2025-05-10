@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class MyFeedResponseDto {
+public class MyFeedsResponseDto {
     List<MyFeedDto> feeds;
     int count; // 피드 개수
 }
