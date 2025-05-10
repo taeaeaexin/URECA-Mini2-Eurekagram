@@ -42,9 +42,9 @@ public class PageController {
         return "/html/detail-feed";
     }
 
-    @GetMapping("/my-info")
-    public String moveMyInfoPage() {
-        return "/html/my-info";
+    @GetMapping("/my-feed")
+    public String moveMyFeedPage() {
+        return "/html/my-feed";
     }
 
     @GetMapping("/join")

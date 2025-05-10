@@ -71,35 +71,23 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
-    public BaseResponseDto<MyFeedsResponseDto> myFeed() {
+    public MyFeedsResponseDto myFeed() {
         // User 엔티티 생성 > Jwt 토큰으로부터 정보 추출 및 findByEmail 실행
         String email = SecurityContextHolder.getContext().getAuthentication().getName(); // 기본적으로 username 반환
         User user = userRepository.findByEmail(email).orElseThrow(
                 () -> new UsernameNotFoundException("User not found")
         );
 
-        try {
-            List<MyFeedDto> feeds = feedRepository.findFeedByUser(user); // (feed_id, image name) 리스트
-            int count = feeds.size();
-            MyFeedsResponseDto myFeedsResponseDto = MyFeedsResponseDto.builder()
-                                                                    .feeds(feeds)
-                                                                    .count(count)
-                                                                    .build();
-            log.info(feeds.toString());
-            return BaseResponseDto.<MyFeedsResponseDto>builder()
-                    .statusCode(200)
-                    .message("피드 조회 성공")
-                    .data(myFeedsResponseDto)
-                    .build();
+        // 내 피드 목록 조회 (feed_id, img name 리스트)
+        List<MyFeedDto> feeds = feedRepository.findFeedByUser(user);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            return BaseResponseDto.<MyFeedsResponseDto>builder()
-                    .statusCode(500)
-                    .message("피드 조회 실패")
-                    .data(null)
-                    .build();
-        }
+        // 내 피드 개수
+        int count = feeds.size();
+
+        return MyFeedsResponseDto.builder()
+                                .feeds(feeds)
+                                .count(count)
+                                .build();
     }
 
 }

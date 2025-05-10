@@ -27,9 +27,10 @@ import static com.gram.eureka.eureka_gram_user.entity.QImage.image;
 public class FeedRepositoryImpl implements FeedRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
+    // User가 작성한 피드 목록 조회. (피드 이미지는 첫번째 이미지만 불러오기)
     @Override
     public List<MyFeedDto> findFeedByUser(User user) {
-        List<MyFeedDto> result = jpaQueryFactory
+        return jpaQueryFactory
                 .select(Projections.bean(MyFeedDto.class,
                                         feed.id.as("feedId"),
                                         ExpressionUtils.as(
@@ -47,11 +48,9 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom {
                                         )))
                 .from(feed)
                 .where(feed.user.id.eq(user.getId()))
+                .orderBy(feed.createdAt.desc()) // 최신순으로
                 .fetch()
                 .stream().toList();
-        System.out.println("로그인한 유저 ID: " + user.getId());
-        System.out.println("조회된 피드: " + result);
-        return result;
     }
 }
 /**

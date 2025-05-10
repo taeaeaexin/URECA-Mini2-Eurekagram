@@ -39,7 +39,23 @@ public class FeedController {
     @GetMapping("/my-feed")
     @ResponseBody
     public BaseResponseDto<MyFeedsResponseDto> myFeed() {
-        log.info(feedService.myFeed().getData().toString());
-        return feedService.myFeed();
+
+        try{
+            MyFeedsResponseDto myFeedsResponseDto = feedService.myFeed();
+
+            return BaseResponseDto.<MyFeedsResponseDto>builder()
+                    .statusCode(200)
+                    .message("내 피드 조회 성공")
+                    .data(myFeedsResponseDto)
+                    .build();
+
+        } catch (Exception e){
+
+            return BaseResponseDto.<MyFeedsResponseDto>builder()
+                    .statusCode(500)
+                    .message("내 피드 조회 실패")
+                    .data(null)
+                    .build();
+        }
     }
 }
