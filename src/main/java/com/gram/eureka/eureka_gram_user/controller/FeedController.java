@@ -9,9 +9,12 @@ import com.gram.eureka.eureka_gram_user.dto.query.FeedDto;
 import com.gram.eureka.eureka_gram_user.service.FeedService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -19,6 +22,16 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/feeds")
 public class FeedController {
     private final FeedService feedService;
+
+    @GetMapping
+    public ResponseEntity<List<FeedResponseDto>> getFeeds(
+            @RequestParam(required = false) Long lastFeedId,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String nickname) {
+        // dto로 받기
+        List<FeedResponseDto> feeds = feedService.getFeeds(lastFeedId, size, nickname);
+        return ResponseEntity.ok(feeds);
+    }
 
     @PostMapping("/")
     @ResponseBody
@@ -57,7 +70,7 @@ public class FeedController {
     @DeleteMapping("/{id}")
     @ResponseBody
     public BaseResponseDto<FeedResponseDto> deleteFeed(@PathVariable Long id) {
-        log.info("detailFeed id :{}", id);
+        log.info("detailFeed id : {}", id);
         FeedResponseDto feedResponseDto = feedService.updateFeed(id);
         return BaseResponseDto.<FeedResponseDto>builder()
                 .statusCode(200)

@@ -98,9 +98,6 @@
 
             const responseData = await response.json();
 
-            alert("responseData 까지 문제 없음");
-
-
             if(responseData.statusCode === 200){
                 const feedList = responseData.data.feeds;
                 const feedCount = responseData.data.count;
