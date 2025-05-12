@@ -1,5 +1,6 @@
 package com.gram.eureka.eureka_gram_user.controller;
 
+
 import com.gram.eureka.eureka_gram_user.dto.*;
 import com.gram.eureka.eureka_gram_user.service.FeedService;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,30 @@ public class FeedController {
                 .data(feed)
                 .build();
     }
+
+
+    @GetMapping("/{id}")
+    @ResponseBody
+    public BaseResponseDto<FeedDto> detailFeed(@PathVariable Long id) {
+        log.info("detailFeed id :{}", id);
+        FeedDto feedDto = feedService.detailFeed(id);
+        return BaseResponseDto.<FeedDto>builder()
+                .statusCode(200)
+                .message("success")
+                .data(feedDto)
+                .build();
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseBody
+    public BaseResponseDto<FeedResponseDto> deleteFeed(@PathVariable Long id) {
+        log.info("detailFeed id :{}", id);
+        FeedResponseDto feedResponseDto = feedService.updateFeed(id);
+        return BaseResponseDto.<FeedResponseDto>builder()
+                .statusCode(200)
+                .message("success")
+                .data(feedResponseDto)
+                .build();
 
     @GetMapping("/my-feed")
     @ResponseBody

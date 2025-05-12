@@ -1,13 +1,62 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>피드 상세</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/detail-feed.css" rel="stylesheet">
 </head>
-<body>
-    <h1>detail.feed</h1>
+<body class="hidden">
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-2 sidebar d-flex flex-column justify-content-between">
+            <!-- 필요 시 사이드바 내용 삽입 -->
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-10 main-content d-flex flex-column justify-content-between">
+            <div>
+                <!-- 상단 검색창 + 버튼 -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <input type="text" class="form-control me-3" placeholder="검색할 닉네임을 입력해주세요" style="max-width: 300px;">
+                    <div>
+                        <!-- ✅ 추가: 수정 / 삭제 버튼 (초기에 숨김 처리) -->
+                        <button id="edit-feed-btn" class="btn btn-outline-light me-2 d-none">수정</button>
+                        <button id="delete-feed-btn" class="btn btn-outline-light me-2 d-none">삭제</button>
+                        <button class="btn btn-outline-light me-2">내 정보</button>
+                        <button class="btn btn-outline-light me-2">로그아웃</button>
+
+                    </div>
+                </div>
+
+                <!-- ✅ 이미지 영역 -->
+                <div id="feed-image-container" class="image-container mb-4">
+                    <!-- JS에서 .image-slot 들이 여기에 삽입됩니다 -->
+                </div>
+
+                <!-- 본문 영역 -->
+                <div class="textarea-box mb-3">
+                    <p id="feed-content" class="m-0">피드 내용이 여기에 출력됩니다.</p>
+                </div>
+
+                <!-- 댓글 영역 -->
+                <div class="textarea-box">
+                    <div id="comment-list" class="mb-3">
+                        <!-- JS로 댓글 목록 렌더링 -->
+                    </div>
+
+                    <div class="d-flex">
+                        <input type="text" class="form-control me-2" id="comment-input" placeholder="댓글 쓰기">
+                        <button class="btn btn-secondary" id="comment-submit">등록</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/js/detail-feed.js"></script>
 </body>
 </html>

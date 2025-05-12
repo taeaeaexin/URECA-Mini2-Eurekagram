@@ -86,9 +86,8 @@ window.onload = () => {
                 throw new Error("서버 오류");
             }
 
-            const result = await response.text();
-
-            window.location.href = "/page/detail-feed";
+            const result = await response.json();
+            window.location.href = `/page/detail-feed?id=${result.data.feedId}`;
 
         } catch (error) {
             console.error("업로드 실패", error);

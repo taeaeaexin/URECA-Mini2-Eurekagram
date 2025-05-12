@@ -1,12 +1,12 @@
 package com.gram.eureka.eureka_gram_user.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @Controller
 @RequestMapping("/page")
 public class PageController {
@@ -38,7 +38,8 @@ public class PageController {
     }
 
     @GetMapping("/detail-feed")
-    public String moveDetailFeedPage() {
+    public String moveDetailFeedPage(@RequestParam(required = false) Long id) {
+        log.info("moveDetailFeedPage : {}", id);
         return "/html/detail-feed";
     }
 
@@ -50,5 +51,10 @@ public class PageController {
     @GetMapping("/join")
     public String moveJoinPage() {
         return "/html/join";
+    }
+
+    @GetMapping("/modify-feed")
+    public String moveModifyFeedPage() {
+        return "/html/modify-feed";
     }
 }
