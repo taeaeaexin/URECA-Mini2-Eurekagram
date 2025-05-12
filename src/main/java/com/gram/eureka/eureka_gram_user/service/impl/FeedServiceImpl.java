@@ -2,10 +2,9 @@ package com.gram.eureka.eureka_gram_user.service.impl;
 
 import com.gram.eureka.eureka_gram_user.dto.FeedRequestDto;
 import com.gram.eureka.eureka_gram_user.dto.FeedResponseDto;
+import com.gram.eureka.eureka_gram_user.dto.MyFeedDto;
+import com.gram.eureka.eureka_gram_user.dto.MyFeedsResponseDto;
 import com.gram.eureka.eureka_gram_user.dto.query.FeedDto;
-
-import com.gram.eureka.eureka_gram_user.dto.*;
-
 import com.gram.eureka.eureka_gram_user.entity.Feed;
 import com.gram.eureka.eureka_gram_user.entity.Image;
 import com.gram.eureka.eureka_gram_user.entity.User;
@@ -15,18 +14,18 @@ import com.gram.eureka.eureka_gram_user.service.FeedService;
 import com.gram.eureka.eureka_gram_user.util.ImageUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-
 @Transactional
 @Slf4j
 public class FeedServiceImpl implements FeedService {
@@ -93,6 +92,7 @@ public class FeedServiceImpl implements FeedService {
         feedResponseDto.setFeedCount(updateFeedCount);
         return feedResponseDto;
     }
+
     public MyFeedsResponseDto myFeed() {
         // User 엔티티 생성 > Jwt 토큰으로부터 정보 추출 및 findByEmail 실행
         String email = SecurityContextHolder.getContext().getAuthentication().getName(); // 기본적으로 username 반환
@@ -107,9 +107,54 @@ public class FeedServiceImpl implements FeedService {
         int count = feeds.size();
 
         return MyFeedsResponseDto.builder()
-                                .feeds(feeds)
-                                .count(count)
-                                .build();
+                .feeds(feeds)
+                .count(count)
+                .build();
     }
 
+    @Override
+    public List<FeedResponseDto> getFeeds(Long lastFeedId, int size, String nickname) {
+        List<Feed> feeds;
+
+        if (!StringUtils.hasText(nickname)) {
+            feeds = feedRepository.findFeeds(lastFeedId, PageRequest.of(0, size));
+        } else {
+            feeds = feedRepository.findFeedsByNickname(nickname, lastFeedId, PageRequest.of(0, size));
+        }
+
+        if (feeds.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Long> feedIds = feeds.stream()
+                .map(Feed::getId)
+                .toList(); // Java 16+ or use .collect(Collectors.toList())
+
+        Map<Long, Long> commentCounts = toCountMap(commentRepository.countByFeedId(feedIds));
+        Map<Long, Long> viewCounts = toCountMap(feedViewRepository.countByFeedId(feedIds));
+
+        return feeds.stream().map(feed -> {
+            FeedResponseDto dto = new FeedResponseDto();
+            dto.setFeedId(feed.getId());
+            dto.setContent(feed.getContent());
+            dto.setImages(
+                    feed.getImages().stream()
+                            .map(image -> "/images/" + image.getStoredImageName())
+                            .toList()
+            );
+            dto.setCommentCount(commentCounts.getOrDefault(feed.getId(), 0L));
+            dto.setViewCount(viewCounts.getOrDefault(feed.getId(), 0L));
+            return dto;
+        }).toList();
+    }
+
+    private Map<Long, Long> toCountMap(List<Object[]> rows) {
+        Map<Long, Long> map = new HashMap<>();
+        for (Object[] row : rows) {
+            Long feedId = ((Number) row[0]).longValue();
+            Long count = ((Number) row[1]).longValue();
+            map.put(feedId, count);
+        }
+        return map;
+    }
 }
