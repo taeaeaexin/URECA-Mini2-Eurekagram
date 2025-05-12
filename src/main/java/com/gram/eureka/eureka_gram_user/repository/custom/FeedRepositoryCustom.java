@@ -1,9 +1,9 @@
 package com.gram.eureka.eureka_gram_user.repository.custom;
 
-import com.gram.eureka.eureka_gram_user.entity.Feed;
-
-import java.util.Optional;
+import com.gram.eureka.eureka_gram_user.dto.query.FeedDto;
 
 public interface FeedRepositoryCustom {
-    Optional<Feed> findByFeedId(Long feedId);
+    FeedDto findFeedInfoById(Long feedId);
+
+    Long updateFeedStatusById(Long id);
 }

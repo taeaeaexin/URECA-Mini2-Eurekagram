@@ -47,4 +47,9 @@ public class PageController {
     public String moveJoinPage() {
         return "/html/join";
     }
+
+    @GetMapping("/modify-feed")
+    public String moveModifyFeedPage() {
+        return "/html/modify-feed";
+    }
 }

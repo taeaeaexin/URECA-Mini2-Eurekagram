@@ -1,7 +1,8 @@
-let userId; // 현재 로그인한 사용자 ID
 let token;
+let userId;
+let feedId;
 
-// 즉시 실행되는 인증 확인 로직 (JWT 검사 및 인증)
+// ✅ JWT 인증 및 인증 완료 후 본문 렌더링 시작
 (async () => {
     token = localStorage.getItem("jwt");
 
@@ -22,7 +23,6 @@ let token;
         if (response.ok) {
             document.body.classList.remove("hidden");
         } else {
-            console.warn("JWT 인증 실패");
             window.location.href = "/";
         }
     } catch (e) {
@@ -31,117 +31,208 @@ let token;
     }
 })();
 
-// 상세 페이지 렌더링 로직 (window.onload 이후 실행)
-window.onload = () => {
-    const params = new URLSearchParams(location.search);
-    const feedId = params.get("id");
+window.onload = async () => {
+    try {
+        const params = new URLSearchParams(location.search);
+        feedId = params.get("id");
 
-    if (!feedId) {
-        alert("잘못된 접근입니다. 피드 ID가 없습니다.");
-        return;
-    }
-
-    // 피드 데이터 조회
-    fetch(`/feeds/${feedId}`, {
-        method: "GET",
-        headers: {
-            "Authorization": `Bearer ${token}`
+        if (!feedId) {
+            alert("잘못된 접근입니다. 피드 ID가 없습니다.");
+            return;
         }
-    })
-        .then(res => {
-            if (!res.ok) throw new Error("피드 조회 실패");
-            return res.json();
-        })
-        .then(feed => {
-            // 이미지 렌더링
-            const img = document.getElementById("feed-image");
-            const placeholder = document.getElementById("image-placeholder");
 
-            if (feed.imageUrl) {
-                img.src = feed.imageUrl;
-                img.style.display = "block";
-                placeholder.style.display = "none";
+        const res = await fetch(`/feeds/${feedId}`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
             }
-
-            // 글 내용 렌더링
-            document.getElementById("feed-content").textContent = feed.content;
-
-            // 댓글 목록 렌더링
-            renderComments(feed.comments);
-        })
-        .catch(err => {
-            console.error("피드 불러오기 오류", err);
-            alert("피드 정보를 불러오지 못했습니다.");
         });
 
-    // 댓글 등록 이벤트
+        if (!res.ok) throw new Error("피드 조회 실패");
+
+        const result = await res.json();
+        const feed = result.data;
+        userId = feed.writer.userId;
+
+        console.log("[DEBUG] feed:", feed);
+
+        renderImages(feed.imageDtoList);
+        document.getElementById("feed-content").textContent = feed.content;
+
+        // ✅ 수정/삭제 버튼 표시 조건
+        if (feed.deleteUpdateYn === true) {
+            const editBtn = document.getElementById("edit-feed-btn");
+            const deleteBtn = document.getElementById("delete-feed-btn");
+            editBtn.classList.remove("d-none");
+            deleteBtn.classList.remove("d-none");
+
+            editBtn.onclick = () => {
+                alert("수정 기능은 추후 구현 예정입니다.");
+                location.href = "/page/modify-feed";
+            };
+
+            deleteBtn.onclick = async () => {
+                if (!confirm("피드를 삭제하시겠습니까?")) return;
+
+                try {
+                    const res = await fetch(`/feeds/${feedId}`, {
+                        method: "DELETE",
+                        headers: {
+                            "Authorization": `Bearer ${token}`
+                        }
+                    });
+
+                    if (!res.ok) throw new Error("피드 삭제 실패");
+
+                    alert("피드가 삭제되었습니다.");
+                    location.href = "/page/main";
+                } catch (err) {
+                    console.error("피드 삭제 오류", err);
+                    alert("피드 삭제에 실패했습니다.");
+                }
+            };
+        }
+
+        await loadComments(); // 댓글 렌더링
+        bindCommentSubmit();  // 댓글 등록 이벤트
+
+    } catch (err) {
+        console.error("피드 불러오기 오류", err);
+        alert("피드 정보를 불러오지 못했습니다.");
+        location.href = "/page/main";
+    }
+};
+
+// ✅ 댓글 조회
+async function loadComments() {
+    try {
+        const res = await fetch("/comments/all", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                feedId: Number(feedId),
+                userId: Number(userId)
+            })
+        });
+
+        if (!res.ok) throw new Error("댓글 목록 조회 실패");
+
+        const result = await res.json();
+        renderComments(result.data);
+    } catch (err) {
+        console.error("댓글 조회 오류", err);
+        alert("댓글 목록을 불러오는 데 실패했습니다.");
+    }
+}
+
+// ✅ 댓글 등록
+function bindCommentSubmit() {
     document.getElementById("comment-submit").addEventListener("click", async () => {
         const input = document.getElementById("comment-input");
         const content = input.value.trim();
 
-        if (!content) return;
+        if (!content) {
+            alert("댓글을 입력해주세요.");
+            return;
+        }
 
         try {
-            const res = await fetch("/api/comments", {
+            const res = await fetch("/comments/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`
                 },
                 body: JSON.stringify({
-                    feedId: feedId,
+                    feedId: Number(feedId),
+                    userId: Number(userId),
                     content: content
                 })
             });
 
-            if (!res.ok) throw new Error();
+            if (!res.ok) throw new Error("댓글 등록 실패");
 
             input.value = "";
-            location.reload(); // 간단히 새로고침
-        } catch {
-            alert("댓글 등록 실패");
+            await loadComments();
+        } catch (err) {
+            console.error("댓글 등록 오류", err);
+            alert("댓글 등록에 실패했습니다.");
         }
     });
-};
+}
 
-// 댓글 목록 렌더링 함수
-function renderComments(comments) {
+// ✅ 이미지 렌더링
+function renderImages(imageDtoList = []) {
+    const imgContainer = document.getElementById("feed-image-container");
+    imgContainer.innerHTML = "";
+
+    if (imageDtoList.length === 0) {
+        imgContainer.innerHTML = "<div class='text-muted'>이미지가 없습니다.</div>";
+        return;
+    }
+
+    imageDtoList.forEach(image => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "image-slot";
+
+        const img = document.createElement("img");
+        img.src = `/images/${image.storedImageName}`;
+        img.alt = image.originalImageName;
+
+        wrapper.appendChild(img);
+        imgContainer.appendChild(wrapper);
+    });
+}
+
+// ✅ 댓글 렌더링
+// ✅ 댓글 렌더링
+function renderComments(comments = []) {
     const list = document.getElementById("comment-list");
     list.innerHTML = "";
 
-    comments.forEach(comment => {
+    comments.forEach(c => {
         const row = document.createElement("div");
-        row.classList.add("d-flex", "justify-content-between", "align-items-center", "mb-1");
+        row.className = "d-flex justify-content-between align-items-center mb-1";
 
+        // 닉네임 + 댓글 내용
         const content = document.createElement("span");
-        content.textContent = comment.content;
-
-        const delBtn = document.createElement("button");
-        delBtn.textContent = "삭제";
-        delBtn.className = "btn btn-outline-light btn-sm";
-        delBtn.disabled = !comment.isMine;
-
-        delBtn.onclick = () => deleteComment(comment.id);
-
+        content.innerHTML = `<strong class="me-2">${c.writer.nickName} :</strong> ${c.content}`;
         row.appendChild(content);
-        row.appendChild(delBtn);
+
+        // ✅ 삭제 가능할 때만 삭제 버튼 추가
+        if (c.deleteYn === true) {
+            const delBtn = document.createElement("button");
+            delBtn.textContent = "삭제";
+            delBtn.className = "btn btn-danger btn-sm";
+            delBtn.onclick = () => deleteComment(c.commentId);
+            row.appendChild(delBtn);
+        }
+
         list.appendChild(row);
     });
 }
 
-// 댓글 삭제 함수
+// ✅ 댓글 삭제 요청
 async function deleteComment(commentId) {
+    if (!confirm("댓글을 삭제하시겠습니까?")) return;
+
     try {
-        const res = await fetch(`/api/comments/${commentId}`, {
+        const res = await fetch(`/comments/${commentId}`, {
             method: "DELETE",
             headers: {
+                "Content-Type": "application/json",
                 "Authorization": `Bearer ${token}`
             }
         });
 
-        if (!res.ok) throw new Error();
-        location.reload();
-    } catch {
-        alert("댓글 삭제 실패");
+        if (!res.ok) throw new Error("댓글 삭제 실패");
+
+        await loadComments();
+    } catch (err) {
+        console.error("댓글 삭제 오류", err);
+        alert("댓글 삭제에 실패했습니다.");
     }
 }

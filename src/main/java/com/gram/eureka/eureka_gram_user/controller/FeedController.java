@@ -3,6 +3,7 @@ package com.gram.eureka.eureka_gram_user.controller;
 import com.gram.eureka.eureka_gram_user.dto.BaseResponseDto;
 import com.gram.eureka.eureka_gram_user.dto.FeedRequestDto;
 import com.gram.eureka.eureka_gram_user.dto.FeedResponseDto;
+import com.gram.eureka.eureka_gram_user.dto.query.FeedDto;
 import com.gram.eureka.eureka_gram_user.service.FeedService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,10 +41,25 @@ public class FeedController {
 
     @GetMapping("/{id}")
     @ResponseBody
-    public void detailFeed(@PathVariable Long id) {
-        log.info("detailFeed id :{}",id);
+    public BaseResponseDto<FeedDto> detailFeed(@PathVariable Long id) {
+        log.info("detailFeed id :{}", id);
+        FeedDto feedDto = feedService.detailFeed(id);
+        return BaseResponseDto.<FeedDto>builder()
+                .statusCode(200)
+                .message("success")
+                .data(feedDto)
+                .build();
+    }
 
-        feedService.detailFeed(id);
-
+    @DeleteMapping("/{id}")
+    @ResponseBody
+    public BaseResponseDto<FeedResponseDto> deleteFeed(@PathVariable Long id) {
+        log.info("detailFeed id :{}", id);
+        FeedResponseDto feedResponseDto = feedService.updateFeed(id);
+        return BaseResponseDto.<FeedResponseDto>builder()
+                .statusCode(200)
+                .message("success")
+                .data(feedResponseDto)
+                .build();
     }
 }

@@ -3,7 +3,8 @@ package com.gram.eureka.eureka_gram_user.dto;
 import lombok.Data;
 
 @Data
-public class FeedResponseDto {
+public class CommentRequestDto {
     private Long feedId;
-    private Long feedCount;
+    private Long userId;
+    private String content;
 }
