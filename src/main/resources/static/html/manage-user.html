@@ -62,7 +62,7 @@
 </div>
 
 
-
+<script src="/js/common.js"></script>
 <script>
     let token;
     (async () => {
@@ -136,24 +136,33 @@
                     const isBlockedEnabled = (user.status === 'PENDING') || (user.status === 'ACTIVE');
                     const isUnblockedEnabled = (user.status === 'INACTIVE');
 
+                    let approveButton = "";
+                    let blockButton = "";
+                    let unblockButton = "";
+
+                    // 상태에 따라 버튼 활성화
+                    if (isApprovedEnabled) {
+                        approveButton = `<button class="btn btn-success btn-sm" onclick="updateStatus('${user.userId}', 'ACTIVE')">승인</button>`;
+                    }
+                    if (isBlockedEnabled) {
+                        blockButton = `<button class="btn btn-danger btn-sm" onclick="updateStatus('${user.userId}', 'INACTIVE')">차단</button>`;
+                    }
+                    if (isUnblockedEnabled) {
+                        unblockButton = `<button class="btn btn-secondary btn-sm" onclick="updateStatus('${user.userId}', 'ACTIVE')">차단 해제</button>`;
+                    }
+
                     tr.innerHTML = `
                       <td>${user.userName}</td>
                       <td>${user.nickName}</td>
-                      <td>${user.phoneNumber}</td>
-                      <td>${user.createdAt}</td>
-                      <td>${user.track} ${user.mode} ${user.batch}</td>
-                      <td id="status-${user.userId}">${user.status}</td>
+                      <td>${formatPhoneNumber(user.phoneNumber)}</td>
+                      <td>${formatDateTime(user.createdAt)}</td>
+                      <td>${formatTrack(user.track)} ${formatMode(user.mode)} ${formatBatch(user.batch)}</td>
+                      <td id="status-${user.userId}">${formatStatus(user.status)}</td>
 
-                      <!--
-                        상태가
-                        ACTIVE(사용가능): 차단 활성화
-                        PENDING(처리중): 승인, 차단 활성화
-                        INACTIVE(사용불가): 차단 해제 활성화
-                        -->
                       <td class="d-flex gap-2 justify-content-center">
-                        <button class="btn btn-success btn-sm" onclick="updateStatus('${user.userId}', 'ACTIVE')">승인</button>
-                        <button class="btn btn-danger btn-sm" onclick="updateStatus('${user.userId}', 'INACTIVE')">차단</button>
-                        <button class="btn btn-secondary btn-sm" onclick="updateStatus('${user.userId}', 'ACTIVE')">차단 해제</button>
+                            ${approveButton}
+                            ${blockButton}
+                            ${unblockButton}
                       </td>
                     `;
                     userContainer.appendChild(tr);
@@ -168,7 +177,7 @@
         }
     }
 
-    // 승인버튼
+    // 상태 수정
     async function updateStatus(userId, status) {
         try {
 
