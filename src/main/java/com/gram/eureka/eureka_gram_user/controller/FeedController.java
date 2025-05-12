@@ -1,7 +1,11 @@
 package com.gram.eureka.eureka_gram_user.controller;
 
 
-import com.gram.eureka.eureka_gram_user.dto.*;
+import com.gram.eureka.eureka_gram_user.dto.BaseResponseDto;
+import com.gram.eureka.eureka_gram_user.dto.FeedRequestDto;
+import com.gram.eureka.eureka_gram_user.dto.FeedResponseDto;
+import com.gram.eureka.eureka_gram_user.dto.MyFeedsResponseDto;
+import com.gram.eureka.eureka_gram_user.dto.query.FeedDto;
 import com.gram.eureka.eureka_gram_user.service.FeedService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,22 +64,20 @@ public class FeedController {
                 .message("success")
                 .data(feedResponseDto)
                 .build();
+    }
 
     @GetMapping("/my-feed")
     @ResponseBody
     public BaseResponseDto<MyFeedsResponseDto> myFeed() {
-
-        try{
+        try {
             MyFeedsResponseDto myFeedsResponseDto = feedService.myFeed();
-
             return BaseResponseDto.<MyFeedsResponseDto>builder()
                     .statusCode(200)
                     .message("내 피드 조회 성공")
                     .data(myFeedsResponseDto)
                     .build();
 
-        } catch (Exception e){
-
+        } catch (Exception e) {
             return BaseResponseDto.<MyFeedsResponseDto>builder()
                     .statusCode(500)
                     .message("내 피드 조회 실패")
@@ -84,3 +86,4 @@ public class FeedController {
         }
     }
 }
+

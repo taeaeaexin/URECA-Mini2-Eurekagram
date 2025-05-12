@@ -56,6 +56,7 @@
 
         if (!token) {
             console.log("jwt 토큰이 존재하지 않습니다.");
+            alert("jwt 토큰이 존재하지 않습니다.");
             window.location.href = "/";
             return;
         }
@@ -71,10 +72,12 @@
             if (response.ok) {
                 document.body.classList.remove("hidden");
             } else {
+                alert("authenticate 메서드 호출");
                 window.location.href = "/";
             }
         } catch (e) {
             console.error("요청 실패:", e);
+            alert("catch 에러 발생");
             window.location.href = "/";
         }
     })();
@@ -95,6 +98,9 @@
 
             const responseData = await response.json();
 
+            alert("responseData 까지 문제 없음");
+
+
             if(responseData.statusCode === 200){
                 const feedList = responseData.data.feeds;
                 const feedCount = responseData.data.count;
@@ -110,10 +116,10 @@
                     col.className = "col-md-3 mb-4";
 
                     col.innerHTML = `
-                        <a href="/feeds/${feed.feedId}">
-                          <img src="/images/${feed.imgName}" class="img-fluid myfeed-img" alt="image">
-                        </a>
-                      `;
+                                    <a href="/page/detail-feed?id=${feed.feedId}">
+                                      <img src="/images/${feed.imgName}" class="img-fluid myfeed-img" alt="image">
+                                    </a>
+                                `;
 
                     myFeeds.appendChild(col);
                 })
@@ -123,6 +129,7 @@
             }
         } catch (e) {
             console.error("요청 실패:", e);
+            alert("listFeed 에서 catch 부분");
             window.location.href = "/";
         }
     }
