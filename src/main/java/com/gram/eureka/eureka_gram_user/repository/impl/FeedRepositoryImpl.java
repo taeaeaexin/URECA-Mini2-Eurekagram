@@ -43,7 +43,6 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom {
                                                                                 .from(image)
                                                                                 .where(image.feed.eq(feed))
                                                                 ))
-//                                                        .limit(1) // limit 누락???
                                                 , "imgName"
                                         )))
                 .from(feed)
@@ -54,17 +53,6 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom {
     }
 }
 /**
- * 그냥 애초에 쿼리에서 하나만 가져오는게 나을듯.
- *
- * select feed.id, (select image.stored_image_name
- *                  from image
- *                  where feed.id = image.feed_id
- *                  limit 1)
- * from feed
- * where feed.user_id = 2;
- * => limit 안됨..
- *
- *
  * select feed.id, (select image.stored_image_name
  * 				from image
  *                 where image.id = (select min(image.id)

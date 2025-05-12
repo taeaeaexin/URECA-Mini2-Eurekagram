@@ -49,10 +49,10 @@
 </div>
 
 <script>
-
+    let token;
     // 즉시 실행되는 인증 확인 로직 (JWT 검사 및 인증)
     (async () => {
-        const token = localStorage.getItem("jwt");
+        token = localStorage.getItem("jwt");
 
         if (!token) {
             console.log("jwt 토큰이 존재하지 않습니다.");
@@ -85,7 +85,6 @@
 
     // 내 피드 조회
     async function listFeed() {
-        const token = localStorage.getItem("jwt");
         try {
 
             const response = await fetch("/feeds/my-feed",{
