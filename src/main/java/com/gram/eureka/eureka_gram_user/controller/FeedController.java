@@ -1,16 +1,11 @@
 package com.gram.eureka.eureka_gram_user.controller;
 
-import com.gram.eureka.eureka_gram_user.dto.BaseResponseDto;
-import com.gram.eureka.eureka_gram_user.dto.FeedRequestDto;
-import com.gram.eureka.eureka_gram_user.dto.FeedResponseDto;
+import com.gram.eureka.eureka_gram_user.dto.*;
 import com.gram.eureka.eureka_gram_user.service.FeedService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @Controller
@@ -39,5 +34,28 @@ public class FeedController {
                 .message("success")
                 .data(feed)
                 .build();
+    }
+
+    @GetMapping("/my-feed")
+    @ResponseBody
+    public BaseResponseDto<MyFeedsResponseDto> myFeed() {
+
+        try{
+            MyFeedsResponseDto myFeedsResponseDto = feedService.myFeed();
+
+            return BaseResponseDto.<MyFeedsResponseDto>builder()
+                    .statusCode(200)
+                    .message("내 피드 조회 성공")
+                    .data(myFeedsResponseDto)
+                    .build();
+
+        } catch (Exception e){
+
+            return BaseResponseDto.<MyFeedsResponseDto>builder()
+                    .statusCode(500)
+                    .message("내 피드 조회 실패")
+                    .data(null)
+                    .build();
+        }
     }
 }
