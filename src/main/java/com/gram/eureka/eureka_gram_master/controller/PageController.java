@@ -36,4 +36,7 @@ public class PageController {
     public String moveDetailFeedPage() {
         return "/html/detail-feed";
     }
+
+    @GetMapping("/manage-user")
+    public String moveManageUserPage() { return "/html/manage-user"; }
 }

@@ -31,4 +31,16 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
                         .fetchOne()
         );
     }
+
+
 }
+
+/**
+ * *** 관리자는 불러오면 안됨:
+ * select *
+ * from user
+ * where role='ROLE_USER';
+ *
+ * 필터링은 백에서? 프론트에서?
+ *
+ */
