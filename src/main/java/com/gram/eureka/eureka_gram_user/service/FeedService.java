@@ -15,5 +15,6 @@ public interface FeedService {
     MyFeedsResponseDto myFeed();
 
     List<FeedResponseDto> getFeeds(Long lastFeedId, int size, String nickname);
-    
+
+    FeedResponseDto updateFeed(FeedRequestDto feedRequestDto);
 }

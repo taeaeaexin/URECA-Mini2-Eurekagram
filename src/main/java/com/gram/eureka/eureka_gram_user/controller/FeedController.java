@@ -98,5 +98,34 @@ public class FeedController {
                     .build();
         }
     }
+
+    @PatchMapping("/{id}")
+    @ResponseBody
+    public BaseResponseDto<FeedResponseDto> updateFeed(@PathVariable Long id, @ModelAttribute FeedRequestDto feedRequestDto) {
+        log.info("updateFeed id :{}", id);
+        log.info("feedRequestDto : {}", feedRequestDto);
+
+        List<MultipartFile> images = feedRequestDto.getImages();
+        if (images != null) {
+            for (MultipartFile image : images) {
+                String contentType = image.getContentType();
+                if (contentType == null || !contentType.startsWith("image/")) {
+                    throw new IllegalArgumentException("이미지 파일만 업로드 가능합니다.");
+                }
+            }
+        }
+
+        feedRequestDto.setId(id);
+
+        log.info("FeedRequestDto : {}", feedRequestDto.getRemainImageIds());
+
+        FeedResponseDto feed = feedService.updateFeed(feedRequestDto);
+
+        return BaseResponseDto.<FeedResponseDto>builder()
+                .statusCode(200)
+                .message("success")
+                .data(feed)
+                .build();
+    }
 }
 

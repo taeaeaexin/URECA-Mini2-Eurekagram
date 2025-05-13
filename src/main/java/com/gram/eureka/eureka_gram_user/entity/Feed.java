@@ -2,10 +2,7 @@ package com.gram.eureka.eureka_gram_user.entity;
 
 import com.gram.eureka.eureka_gram_user.entity.enums.Status;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +17,7 @@ public class Feed extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     @Lob
     @Column(columnDefinition = "TEXT")
     private String content; // 피드 내용
@@ -30,6 +28,6 @@ public class Feed extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Status status; // 상태 관리
 
-    @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Image> images = new ArrayList<>();
 }

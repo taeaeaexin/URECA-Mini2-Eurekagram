@@ -2,7 +2,7 @@ let token;
 let userId;
 let feedId;
 
-// ✅ JWT 인증 및 인증 완료 후 본문 렌더링 시작
+// JWT 인증 및 인증 완료 후 본문 렌더링 시작
 (async () => {
     token = localStorage.getItem("jwt");
 
@@ -59,7 +59,7 @@ window.onload = async () => {
         renderImages(feed.imageDtoList);
         document.getElementById("feed-content").textContent = feed.content;
 
-        // ✅ 수정/삭제 버튼 표시 조건
+        // 수정/삭제 버튼 표시 조건
         if (feed.deleteUpdateYn === true) {
             const editBtn = document.getElementById("edit-feed-btn");
             const deleteBtn = document.getElementById("delete-feed-btn");
@@ -67,8 +67,7 @@ window.onload = async () => {
             deleteBtn.classList.remove("d-none");
 
             editBtn.onclick = () => {
-                alert("수정 기능은 추후 구현 예정입니다.");
-                location.href = "/page/modify-feed";
+                window.location.href = `/page/modify-feed?id=${feed.feedId}`;
             };
 
             deleteBtn.onclick = async () => {
@@ -103,7 +102,7 @@ window.onload = async () => {
     }
 };
 
-// ✅ 댓글 조회
+// 댓글 조회
 async function loadComments() {
     try {
         const res = await fetch("/comments/all", {
@@ -128,7 +127,7 @@ async function loadComments() {
     }
 }
 
-// ✅ 댓글 등록
+// 댓글 등록
 function bindCommentSubmit() {
     document.getElementById("comment-submit").addEventListener("click", async () => {
         const input = document.getElementById("comment-input");
@@ -164,7 +163,7 @@ function bindCommentSubmit() {
     });
 }
 
-// ✅ 이미지 렌더링
+// 이미지 렌더링
 function renderImages(imageDtoList = []) {
     const imgContainer = document.getElementById("feed-image-container");
     imgContainer.innerHTML = "";
@@ -187,8 +186,7 @@ function renderImages(imageDtoList = []) {
     });
 }
 
-// ✅ 댓글 렌더링
-// ✅ 댓글 렌더링
+// 댓글 렌더링
 function renderComments(comments = []) {
     const list = document.getElementById("comment-list");
     list.innerHTML = "";
@@ -202,7 +200,7 @@ function renderComments(comments = []) {
         content.innerHTML = `<strong class="me-2">${c.writer.nickName} :</strong> ${c.content}`;
         row.appendChild(content);
 
-        // ✅ 삭제 가능할 때만 삭제 버튼 추가
+        // 삭제 가능할 때만 삭제 버튼 추가
         if (c.deleteYn === true) {
             const delBtn = document.createElement("button");
             delBtn.textContent = "삭제";
@@ -215,7 +213,7 @@ function renderComments(comments = []) {
     });
 }
 
-// ✅ 댓글 삭제 요청
+// 댓글 삭제 요청
 async function deleteComment(commentId) {
     if (!confirm("댓글을 삭제하시겠습니까?")) return;
 
