@@ -187,7 +187,7 @@ function renderImages(imageDtoList = []) {
         wrapper.className = "image-slot";
         console.log("[DEBUG] feed193:");
         const img = document.createElement("img");
-        img.src = `/images/${image.storedImageName}`;
+        img.src = `http://localhost:8081/images/${image.storedImageName}`;
         img.alt = image.originalImageName;
         console.log("[DEBUG] feed197:");
         wrapper.appendChild(img);

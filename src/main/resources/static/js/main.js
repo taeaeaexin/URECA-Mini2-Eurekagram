@@ -38,7 +38,7 @@ window.onload = () => {
                 feedDiv.className = "feed-card";
 
                 const image = feed.images?.[0]
-                    ? `<img src="${feed.images[0]}" class="feed-image" />`
+                    ? `<img src="http://localhost:8081${feed.images[0]}" class="feed-image" />`
                     : `<div class="feed-image-placeholder">이미지 없음</div>`;
 
                 feedDiv.innerHTML = `
