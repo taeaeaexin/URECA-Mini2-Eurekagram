@@ -10,118 +10,123 @@ body.hidden {
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #1e1e1e;
+    background-color: #000;
     color: white;
 }
 
-/* 사이드바 */
+/* 상단 바 */
+/* 최상단 네비게이션 바 */
+/* ✅ .top-navbar 수정 (피드 영역에서 가운데) */
+.top-navbar {
+    position: sticky;
+    top: 0; /* 상단 기준 */
+    z-index: 10; /* 다른 요소 위에 보이도록 */
+    background-color: #000; /* 스크롤 시 배경 어긋나지 않게 */
+    padding: 10px 0;
+    display: flex;
+    justify-content: center;
+}
+
+.nav-search {
+    width: 100%;
+    max-width: 350px;
+    padding: 10px;
+    border-radius: 6px;
+    background-color: #1e1e1e;
+    border: none;
+    color: white;
+    font-size: 14px;
+
+}
+
+.top-navbar-left {
+    display: flex;
+    align-items: center;
+}
+
+.top-navbar-right {
+    display: flex;
+    gap: 10px;
+}
+
+
+
+/* 좌측 사이드바 */
 .left-sidebar {
     width: 250px;
-    min-height: 100vh;
-    background-color: #2e2e2e;
+    height: 100vh;
+    background-color: #000;
     position: fixed;
     top: 0;
     left: 0;
     padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    border-right: 1px solid #444;
-}
-
-/* 우측 */
-.right-sidebar {
-    width: 250px;
-    min-height: 100vh;
-    background-color: #2e2e2e;
-    position: fixed;
-    top: 100px;
-    right: 0;
-    border-left: 1px solid #444;
-}
-
-/* 상단바 */
-.top-navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 100px;
-    background-color: #2e2e2e;
-    z-index: 10;
-
-    display: flex;
-    align-items: center;
     justify-content: space-between;
-    padding-left: 270px;  /* 좌측 사이드바 공간 고려 */
-    padding-right: 270px; /* 우측 사이드바 공간 고려 */
+    border-right: 1px solid #333;
 }
 
-.top-navbar-left,
-.top-navbar-right {
+.brand-logo {
+    width: 140px;
+    margin-bottom: 20px;
+    margin-left: 4px;
+}
+
+.sidebar-menu {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px; /* 아이콘과 텍스트 간격 */
+    font-size: 16px;
+    color: #eee;
+    cursor: pointer;
+    padding: 10px 30px;
 }
 
-.nav-search {
-    padding: 10px;
-    width: 400px;
-    border-radius: 4px;
-    border: none;
+.sidebar-menu:hover {
+    background-color: #111;
+    border-radius: 6px;
+}
+
+.logout-btn {
+    margin-top: auto;
+    padding-top: 30px;
 }
 
 /* 메인 영역 */
 .main-area {
+    margin-left: 250px;
+    padding: 5px 20px;
     display: flex;
-    margin-top: 100px;
-    padding-left: 250px;
-    padding-right: 250px;
     justify-content: center;
 }
 
-/* 피드 나열 */
 .main-content {
     width: 100%;
-    max-width: 800px;
-    padding: 20px;
+    max-width: 600px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-}
-
-/* 피드 카드 */
-.feed-card {
-    background-color: white;
-    color: black;
-    width: 100%;
-    min-height: 300px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-    padding: 16px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    gap: 20px;
 }
 
 .feed-image {
     width: 100%;
     height: 400px;
+    object-fit: cover;
     border-radius: 8px;
     margin-bottom: 12px;
-    object-fit: cover;
 }
 
 .feed-content {
-    font-size: 16px;
+    font-size: 15px;
+    line-height: 1.5;
     margin-bottom: 8px;
-    word-break: break-word;
-
-    display: -webkit-box;
-    -webkit-line-clamp: 4;           /* 원하는 줄 수 */
-    -webkit-box-orient: vertical;
+    white-space: normal;
     overflow: hidden;
     text-overflow: ellipsis;
-    line-height: 1.5em;
-    max-height: calc(1.5em * 4);     /* 4줄 기준 높이 제한 */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;        /* 🔹 원하는 줄 수로 조절 (예: 4줄까지 표시) */
+    -webkit-box-orient: vertical;
+    max-height: calc(1.5em * 4);  /* 🔹 줄 수 × line-height */
 }
 
 .feed-meta {
@@ -130,25 +135,65 @@ body {
     text-align: right;
 }
 
-button {
-    padding: 5px;
-    padding-left: 15px;
-    padding-right: 15px;
-    margin-top: 10px;
-    border: solid 1px;
-    border-radius: 5px;
-    border-color: lightgray;
-    background-color: dimgray;
-    color: lightgray;
+.top-navbar-button {
+    padding: 8px 16px;
+    border: 1px solid #888;
+    border-radius: 6px;
+    background-color: #2e2e2e;
+    color: white;
     cursor: pointer;
+}
+
+.top-navbar-button:hover {
+    background-color: #444;
+}
+
+.feed-author {
+    font-size: 13px;
+    color: #aaa;
+    margin-bottom: 10px;
+    margin-left: 10px;
+}
+
+.feed-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    color: #ccc;
+    margin-bottom: 10px;
+    padding: 0 2px;
+}
+
+.feed-header .nickname {
+    font-weight: bold;
+    color: #ddd;
+}
+
+.feed-header .created-date {
+    font-size: 13px;
+    color: #aaa;
+}
+
+.empty-message {
+    text-align: center;
+    color: #aaa;
     font-size: 16px;
+    padding: 100px 0;
 }
 
 .feed-card {
-    cursor: pointer; /* 마우스 오버 시 손가락 커서 */
-    transition: background-color 0.2s;
+    background-color: #121212;
+    color: white;
+    padding: 16px;
+    border-radius: 12px;
+    /*border: 1px solid #333;*/
+    cursor: pointer; /* ✅ 커서 변경 */
+    transition: background-color 0.2s, transform 0.2s;
 }
 
 .feed-card:hover {
-    background-color: #f5f5f5; /* 호버 시 밝은 배경 효과 */
+    background-color: #1e1e1e;  /* ✅ 살짝 더 밝은 톤 */
+    transform: translateY(-2px); /* ✅ 위로 살짝 뜨는 느낌 */
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.05); /* ✅ 그림자 */
 }

@@ -27,7 +27,7 @@ public class TestDataLoader {
 
     @PostConstruct
     public void init() {
-        createUser();
+//         createUser();
         // createFeed();
     }
 
@@ -89,8 +89,8 @@ public class TestDataLoader {
 
     // 사용자 정보 데이터 생성
     public void createUser() {
-        // ACTIVE 사용자 3명
-        for (int i = 1; i <= 2; i++) {
+        // ACTIVE 사용자 1명
+        for (int i = 1; i <= 1; i++) {
             User user = User.builder()
                     .userName("활성사용자" + i)
                     .email("active" + i + "@naver.com")

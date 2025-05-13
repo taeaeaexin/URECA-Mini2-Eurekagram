@@ -41,11 +41,30 @@ window.onload = () => {
                     ? `<img src="${feed.images[0]}" class="feed-image" />`
                     : `<div class="feed-image-placeholder">이미지 없음</div>`;
 
+                // 날짜 포맷 예시 (정확하게 yyyy-MM-dd HH:mm:ss로 추출)
+                const formatDateTime = (isoString) => {
+                    if (!isoString) return '';
+                    const date = new Date(isoString);
+                    const yyyy = date.getFullYear();
+                    const mm = String(date.getMonth() + 1).padStart(2, '0');
+                    const dd = String(date.getDate()).padStart(2, '0');
+                    const hh = String(date.getHours()).padStart(2, '0');
+                    const mi = String(date.getMinutes()).padStart(2, '0');
+                    return `${yyyy}년 ${mm}월 ${dd}일 ${hh}시 ${mi}분 `;
+                };
+
+                // 사용 예시
+                const date = formatDateTime(feed.createDate);
+
                 feedDiv.innerHTML = `
-                    ${image}
-                    <div class="feed-content">${feed.content}</div>
-                    <div class="feed-meta">조회수 ${feed.viewCount} · 댓글 ${feed.commentCount}</div>
-                `;
+                                    <div class="feed-header">
+                                        <div class="nickname">@${feed.nickName ?? '알 수 없음'}</div>
+                                        <div class="created-date">${date}</div>
+                                    </div>
+                                    ${image}
+                                    <div class="feed-content">${feed.content}</div>
+                                    <div class="feed-meta">조회수 ${feed.viewCount} · 댓글 ${feed.commentCount}</div>
+                                `;
 
                 feedDiv.addEventListener('click', () => {
                     window.location.href = `/page/detail-feed?id=${feed.feedId}`;
@@ -78,7 +97,9 @@ window.onload = () => {
                     const feeds = await response.json();
 
                     if (feeds.length === 0 && !lastFeedId) {
-                        mainContent.innerHTML = "<p>게시물이 없습니다</p>";
+                        mainContent.innerHTML = `
+                                                <div class="empty-message">게시물이 없습니다</div>
+                                            `;
                         return;
                     }
 
@@ -110,7 +131,15 @@ window.onload = () => {
                     currentNickname = e.target.value.trim();
                     lastFeedId = null;
                     currentFeedList = [];
-                    mainContent.innerHTML = '';
+
+                    // 🔥 검색창을 제외한 나머지 mainContent 내부 요소 제거
+                    const mainContent = document.querySelector('.main-content');
+                    Array.from(mainContent.children).forEach(child => {
+                        if (!child.classList.contains('top-navbar')) {
+                            mainContent.removeChild(child);
+                        }
+                    });
+
                     loadFeeds();
                 }
             });
