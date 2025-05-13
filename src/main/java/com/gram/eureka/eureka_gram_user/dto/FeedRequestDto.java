@@ -7,6 +7,8 @@ import java.util.List;
 
 @Data
 public class FeedRequestDto {
+    private Long id;
     private String content;
     private List<MultipartFile> images;
+    private List<Long> remainImageIds;
 }

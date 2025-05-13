@@ -26,4 +26,11 @@ public class ImageRepositoryImpl implements ImageRepositoryCustom {
                 )
                 .fetch();
     }
+
+    @Override
+    public void updateStatusByIds(List<Long> ids) {
+        jpaQueryFactory.delete(image)
+                .where(image.id.in(ids))
+                .execute();
+    }
 }

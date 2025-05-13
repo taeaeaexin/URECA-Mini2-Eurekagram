@@ -13,6 +13,7 @@ import com.gram.eureka.eureka_gram_user.entity.enums.Status;
 import com.gram.eureka.eureka_gram_user.repository.*;
 import com.gram.eureka.eureka_gram_user.service.FeedService;
 import com.gram.eureka.eureka_gram_user.util.ImageUtil;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +25,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -162,6 +164,63 @@ public class FeedServiceImpl implements FeedService {
             dto.setViewCount(viewCounts.getOrDefault(feed.getId(), 0L));
             return dto;
         }).toList();
+    }
+
+    @Override
+    public FeedResponseDto updateFeed(FeedRequestDto feedRequestDto) {
+        Feed feed = feedRepository.findById(feedRequestDto.getId()).orElseThrow(
+                () -> new EntityNotFoundException("Feed not found")
+        );
+
+        feed.setContent(feedRequestDto.getContent());
+
+        List<Image> originalImages = feed.getImages();
+        if (originalImages == null) {
+            originalImages = new ArrayList<>();
+        }
+
+        // 기존 피드의 이미지 아이디
+        List<Long> originalImageIds = originalImages.stream()
+                .map(Image::getId)
+                .collect(Collectors.toList());
+
+        // 프론트에서 전달된 이미지 아이디
+        List<Long> remainImageIds = feedRequestDto.getRemainImageIds();
+        if (remainImageIds == null) {
+            remainImageIds = new ArrayList<>();
+        }
+
+        // 삭제해야 하는 이미지 아이디 = 기존 피드 이미지 아이디 - 프론트에서 전달된 이미지 아이디
+        originalImageIds.removeAll(remainImageIds);
+
+        if (!originalImageIds.isEmpty()) {
+            imageRepository.updateStatusByIds(originalImageIds);
+        }
+
+        // feed 매핑되는 이미지 등록
+        List<MultipartFile> images = feedRequestDto.getImages();
+        if (images != null) {
+            List<Image> imageList = new ArrayList<>();
+            for (MultipartFile mpFile : images) {
+                String fullName = mpFile.getOriginalFilename();
+                String[] splitFullName = fullName.split("\\.");
+                String extension = splitFullName[splitFullName.length - 1];
+
+                Image image = Image.builder()
+                        .feed(feed)
+                        .originalImageName(fullName)
+                        .storedImageName(imageUtil.saveImageToDisk(mpFile))
+                        .imageExtension(extension)
+                        .build();
+
+                imageList.add(image);
+            }
+            imageRepository.saveAll(imageList);
+        }
+
+        FeedResponseDto feedResponseDto = new FeedResponseDto();
+        feedResponseDto.setFeedId(feed.getId());
+        return feedResponseDto;
     }
 
     private Map<Long, Long> toCountMap(List<Object[]> rows) {

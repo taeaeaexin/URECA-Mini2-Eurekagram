@@ -8,4 +8,6 @@ import java.util.List;
 public interface ImageRepositoryCustom {
 
     List<Image> findByFeed(Feed feed);
+
+    void updateStatusByIds(List<Long> ids);
 }
