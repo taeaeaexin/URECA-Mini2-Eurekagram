@@ -3,6 +3,7 @@ package com.gram.eureka.eureka_gram_master.service.impl;
 import com.gram.eureka.eureka_gram_master.dto.UserManagementDto;
 import com.gram.eureka.eureka_gram_master.entity.User;
 import com.gram.eureka.eureka_gram_master.entity.enums.Status;
+import com.gram.eureka.eureka_gram_master.repository.FeedRepository;
 import com.gram.eureka.eureka_gram_master.repository.UserRepository;
 import com.gram.eureka.eureka_gram_master.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final FeedRepository feedRepository;
 
     // 상태별 사용자 리스트 조회 (활성/비활성/대기/전체 사용자)
     @Override
@@ -29,8 +31,22 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UsernameNotFoundException("User not found")
         );
+        // status : APPROVE / BLOCK / UNBLOCK
+        if("APPROVE".equals(status)) { // 승인
+            user.setStatus(Status.ACTIVE);
 
-        user.setStatus(Status.valueOf(status));
+        } else if("BLOCK".equals(status)) { // 차단
+            user.setStatus(Status.INACTIVE);
+
+        } else if("UNBLOCK".equals(status)){ // 차단 해제
+            user.setStatus(Status.ACTIVE);
+
+        }
+
+
+
+        // INACTIVE -> 사용자 피드 status=inactive
+        // ACTIVE -> 사용자 피드 status=active
         userRepository.save(user);
     }
 }

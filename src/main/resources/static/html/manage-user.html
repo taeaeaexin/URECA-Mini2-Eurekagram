@@ -156,13 +156,13 @@
                     let unblockButton = "";
 
                     if (isApprovedEnabled) {
-                        approveButton = `<button class="btn btn-success btn-sm" onclick="updateStatus('${user.userId}', 'ACTIVE')">승인</button>`;
+                        approveButton = `<button class="btn btn-success btn-sm" onclick="updateStatus('${user.userId}', 'APPROVE')">승인</button>`;
                     }
                     if (isBlockedEnabled) {
-                        blockButton = `<button class="btn btn-danger btn-sm" onclick="updateStatus('${user.userId}', 'INACTIVE')">차단</button>`;
+                        blockButton = `<button class="btn btn-danger btn-sm" onclick="updateStatus('${user.userId}', 'BLOCK')">차단</button>`;
                     }
                     if (isUnblockedEnabled) {
-                        unblockButton = `<button class="btn btn-secondary btn-sm" onclick="updateStatus('${user.userId}', 'ACTIVE')">차단 해제</button>`;
+                        unblockButton = `<button class="btn btn-secondary btn-sm" onclick="updateStatus('${user.userId}', 'UNBLOCK')">차단 해제</button>`;
                     }
 
                     // 사용자 정보 표시
