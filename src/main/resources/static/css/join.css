@@ -58,8 +58,8 @@ label {
 
 /* 각 입력 그룹 */
 .form-group {
-    width: 100%;
     margin-bottom: 16px;
+    width: 23vw;
 }
 
 /* 입력창, 셀렉트 */
