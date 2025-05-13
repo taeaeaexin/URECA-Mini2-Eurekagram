@@ -69,7 +69,7 @@ public class FeedController {
     @DeleteMapping("/{id}")
     @ResponseBody
     public BaseResponseDto<FeedResponseDto> deleteFeed(@PathVariable Long id) {
-        log.info("detailFeed id : {}", id);
+        log.info("deleteFeed id : {}", id);
         FeedResponseDto feedResponseDto = feedService.updateFeed(id);
         return BaseResponseDto.<FeedResponseDto>builder()
                 .statusCode(200)

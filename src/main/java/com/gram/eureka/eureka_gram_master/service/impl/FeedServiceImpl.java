@@ -12,6 +12,7 @@ import com.gram.eureka.eureka_gram_master.entity.enums.Status;
 import com.gram.eureka.eureka_gram_master.repository.*;
 import com.gram.eureka.eureka_gram_master.service.FeedService;
 import com.gram.eureka.eureka_gram_master.util.ImageUtil;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +27,7 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class FeedServiceImpl implements FeedService {
     private final FeedRepository feedRepository;
     private final UserRepository userRepository;
@@ -85,6 +87,7 @@ public class FeedServiceImpl implements FeedService {
 
     @Override
     public FeedResponseDto updateFeed(Long id) {
+        log.info("service detailFeed id : {}", id);
         Long updateFeedCount = feedRepository.updateFeedStatusById(id);
         FeedResponseDto feedResponseDto = new FeedResponseDto();
         feedResponseDto.setFeedCount(updateFeedCount);

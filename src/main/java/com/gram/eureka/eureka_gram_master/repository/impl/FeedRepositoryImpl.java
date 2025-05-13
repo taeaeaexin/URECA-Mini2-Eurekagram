@@ -132,7 +132,7 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom {
                                 , "imgName"
                         )))
                 .from(feed)
-                .where(feed.user.id.eq(user.getId()))
+                .where(feed.user.id.eq(user.getId()).and(feed.status.eq(Status.ACTIVE)))
                 .orderBy(feed.createdAt.desc()) // 최신순으로
                 .fetch()
                 .stream().toList();
@@ -144,7 +144,12 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom {
                 .selectFrom(feed)
                 .leftJoin(feed.user).fetchJoin()
                 .leftJoin(feed.images).fetchJoin()
-                .where(lastFeedId != null ? feed.id.lt(lastFeedId) : null) // if(닉네임 != null)
+                .where(
+                        feed.status.eq(Status.ACTIVE).and(
+                                (lastFeedId != null ? feed.id.lt(lastFeedId) : null)
+                        )
+
+                ) // if(닉네임 != null)
                 .orderBy(feed.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -158,8 +163,11 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom {
                 .leftJoin(feed.user).fetchJoin()
                 .leftJoin(feed.images).fetchJoin()
                 .where(
-                        feed.user.nickName.eq(nickname),
-                        lastFeedId != null ? feed.id.lt(lastFeedId) : null
+                        feed.status.eq(Status.ACTIVE).and(
+                                feed.user.nickName.eq(nickname).and(
+                                        (lastFeedId != null ? feed.id.lt(lastFeedId) : null)
+                                )
+                        )
                 )
                 .orderBy(feed.id.desc())
                 .offset(pageable.getPageNumber() * pageable.getPageSize())

@@ -32,7 +32,7 @@ window.onload = () => {
 
             // 피드 렌더 함수
             function renderFeed(feed) {
-                if (!feed || !feed.feedId) return; // 방어 코드
+                if (!feed || !feed.feedId) return;
 
                 const feedDiv = document.createElement('div');
                 feedDiv.className = "feed-card";
@@ -48,9 +48,6 @@ window.onload = () => {
                 `;
 
                 feedDiv.addEventListener('click', () => {
-                    // ✅ 피드 목록 + 스크롤 위치 저장
-                    sessionStorage.setItem("feedList", JSON.stringify(currentFeedList));
-                    sessionStorage.setItem("scrollY", window.scrollY.toString());
                     window.location.href = `/page/detail-feed?id=${feed.feedId}`;
                 });
 
@@ -97,37 +94,8 @@ window.onload = () => {
                 }
             }
 
-            // 세션 저장 복원 함수
-            function restoreFromSession() {
-                const feedListJson = sessionStorage.getItem("feedList");
-                if (!feedListJson) return false;
-
-                try {
-                    const feeds = JSON.parse(feedListJson);
-                    feeds.forEach(feed => {
-                        renderFeed(feed);
-                        currentFeedList.push(feed);
-                        lastFeedId = feed.feedId;
-                    });
-
-                    const scrollY = sessionStorage.getItem("scrollY");
-                    if (scrollY !== null) {
-                        setTimeout(() => {
-                            window.scrollTo(0, parseInt(scrollY));
-                            sessionStorage.removeItem("scrollY");
-                            sessionStorage.removeItem("feedList");
-                        }, 100); // DOM 렌더링 기다림
-                    }
-                    return true;
-                } catch (err) {
-                    console.error("세션 복원 실패", err);
-                    return false;
-                }
-            }
-
-            // 초기 로딩
-            const restored = restoreFromSession();
-            if (!restored) loadFeeds();
+            // ✅ 세션 복원 제거하고 바로 loadFeeds()
+            loadFeeds();
 
             // 무한 스크롤
             window.addEventListener('scroll', () => {

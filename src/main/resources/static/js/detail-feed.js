@@ -59,39 +59,36 @@ window.onload = async () => {
         renderImages(feed.imageDtoList);
         document.getElementById("feed-content").textContent = feed.content;
 
-        // ✅ 수정/삭제 버튼 표시 조건
-        if (feed.deleteUpdateYn === true) {
-            const editBtn = document.getElementById("edit-feed-btn");
-            const deleteBtn = document.getElementById("delete-feed-btn");
-            editBtn.classList.remove("d-none");
-            deleteBtn.classList.remove("d-none");
+        const editBtn = document.getElementById("edit-feed-btn");
+        const deleteBtn = document.getElementById("delete-feed-btn");
+        editBtn.classList.remove("d-none");
+        deleteBtn.classList.remove("d-none");
 
-            editBtn.onclick = () => {
-                alert("수정 기능은 추후 구현 예정입니다.");
-                location.href = "/page/modify-feed";
-            };
+        editBtn.onclick = () => {
+            alert("수정 기능은 추후 구현 예정입니다.");
+            location.href = "/page/modify-feed";
+        };
 
-            deleteBtn.onclick = async () => {
-                if (!confirm("피드를 삭제하시겠습니까?")) return;
+        deleteBtn.onclick = async () => {
+            if (!confirm("피드를 삭제하시겠습니까?")) return;
 
-                try {
-                    const res = await fetch(`/feeds/${feedId}`, {
-                        method: "DELETE",
-                        headers: {
-                            "Authorization": `Bearer ${token}`
-                        }
-                    });
+            try {
+                const res = await fetch(`/feeds/${feedId}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
 
-                    if (!res.ok) throw new Error("피드 삭제 실패");
+                if (!res.ok) throw new Error("피드 삭제 실패");
 
-                    alert("피드가 삭제되었습니다.");
-                    location.href = "/page/main";
-                } catch (err) {
-                    console.error("피드 삭제 오류", err);
-                    alert("피드 삭제에 실패했습니다.");
-                }
-            };
-        }
+                alert("피드가 삭제되었습니다.");
+                location.href = "/page/main";
+            } catch (err) {
+                console.error("피드 삭제 오류", err);
+                alert("피드 삭제에 실패했습니다.");
+            }
+        };
 
         await loadComments(); // 댓글 렌더링
         bindCommentSubmit();  // 댓글 등록 이벤트
