@@ -8,7 +8,7 @@ import java.util.List;
 public interface FeedService {
     FeedResponseDto createFeed(FeedRequestDto feedRequestDto);
 
-    FeedDto detailFeed(Long id);
+    FeedDto detailFeed(Long feedId);
 
     FeedResponseDto updateFeed(Long id);
   

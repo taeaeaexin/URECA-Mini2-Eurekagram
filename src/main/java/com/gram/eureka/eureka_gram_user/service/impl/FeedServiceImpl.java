@@ -6,6 +6,7 @@ import com.gram.eureka.eureka_gram_user.dto.MyFeedDto;
 import com.gram.eureka.eureka_gram_user.dto.MyFeedsResponseDto;
 import com.gram.eureka.eureka_gram_user.dto.query.FeedDto;
 import com.gram.eureka.eureka_gram_user.entity.Feed;
+import com.gram.eureka.eureka_gram_user.entity.FeedView;
 import com.gram.eureka.eureka_gram_user.entity.Image;
 import com.gram.eureka.eureka_gram_user.entity.User;
 import com.gram.eureka.eureka_gram_user.entity.enums.Status;
@@ -78,9 +79,24 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
-    public FeedDto detailFeed(Long id) {
-        FeedDto feedDto = feedRepository.findFeedInfoById(id);
-        Long feedViewCount = feedViewRepository.getFeedViewCount(id);
+    public FeedDto detailFeed(Long feedId) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName(); // 기본적으로 username 반환
+        User findUser = userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException("User not found")
+        );
+
+        Long userId = findUser.getId();
+        if (feedViewRepository.findExistByFeedIdAndUserId(feedId, userId)) {
+            FeedView feedView = FeedView.builder()
+                    .user(findUser)
+                    .feed(feedRepository.findById(feedId).get())
+                    .build();
+
+            feedViewRepository.save(feedView);
+        }
+
+        FeedDto feedDto = feedRepository.findFeedInfoById(feedId, userId);
+        Long feedViewCount = feedViewRepository.getFeedViewCount(feedId);
         feedDto.setFeedViewCount(feedViewCount);
         return feedDto;
     }
