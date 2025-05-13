@@ -37,7 +37,7 @@ window.onload = async () => {
         feedId = params.get("id");
 
         if (!feedId) {
-            alert("잘못된 접근입니다. 피드 ID가 없습니다.");
+            console.log("잘못된 접근입니다. 피드 ID가 없습니다.");
             return;
         }
 
@@ -54,24 +54,24 @@ window.onload = async () => {
         const feed = result.data;
         userId = feed.writer.userId;
 
-        console.log("[DEBUG] feed:", feed);
+        console.log("[DEBUG] feed:");
 
         renderImages(feed.imageDtoList);
         document.getElementById("feed-content").textContent = feed.content;
 
-        const editBtn = document.getElementById("edit-feed-btn");
+
         const deleteBtn = document.getElementById("delete-feed-btn");
-        editBtn.classList.remove("d-none");
         deleteBtn.classList.remove("d-none");
 
-        editBtn.onclick = () => {
-            alert("수정 기능은 추후 구현 예정입니다.");
-            location.href = "/page/modify-feed";
-        };
+        console.log("[DEBUG] feed:");
+
+
+        console.log("[DEBUG] feed74:");
 
         deleteBtn.onclick = async () => {
             if (!confirm("피드를 삭제하시겠습니까?")) return;
 
+            console.log("[DEBUG] feed79:", feed);
             try {
                 const res = await fetch(`/feeds/${feedId}`, {
                     method: "DELETE",
@@ -80,28 +80,32 @@ window.onload = async () => {
                     }
                 });
 
+                console.log("[DEBUG] feed:88", feed);
+
                 if (!res.ok) throw new Error("피드 삭제 실패");
 
-                alert("피드가 삭제되었습니다.");
+                console.log("피드가 삭제되었습니다.");
                 location.href = "/page/main";
             } catch (err) {
                 console.error("피드 삭제 오류", err);
-                alert("피드 삭제에 실패했습니다.");
+                console.log("피드 삭제에 실패했습니다.");
             }
         };
-
+        console.log("[DEBUG] feed99:");
         await loadComments(); // 댓글 렌더링
+        console.log("[DEBUG] feed101:");
         bindCommentSubmit();  // 댓글 등록 이벤트
-
+        console.log("[DEBUG] feed103:");
     } catch (err) {
         console.error("피드 불러오기 오류", err);
-        alert("피드 정보를 불러오지 못했습니다.");
+        console.log("피드 정보를 불러오지 못했습니다.");
         location.href = "/page/main";
     }
 };
 
 // ✅ 댓글 조회
 async function loadComments() {
+    console.log("[DEBUG] feed113:");
     try {
         const res = await fetch("/comments/all", {
             method: "POST",
@@ -115,13 +119,18 @@ async function loadComments() {
             })
         });
 
+        console.log("[DEBUG] feed:127");
+
         if (!res.ok) throw new Error("댓글 목록 조회 실패");
 
+        console.log("[DEBUG] feed131:");
         const result = await res.json();
+
+        console.log("[DEBUG] feed134:");
         renderComments(result.data);
     } catch (err) {
         console.error("댓글 조회 오류", err);
-        alert("댓글 목록을 불러오는 데 실패했습니다.");
+        console.log("댓글 목록을 불러오는 데 실패했습니다.");
     }
 }
 
@@ -132,7 +141,7 @@ function bindCommentSubmit() {
         const content = input.value.trim();
 
         if (!content) {
-            alert("댓글을 입력해주세요.");
+            console.log("댓글을 입력해주세요.");
             return;
         }
 
@@ -156,7 +165,7 @@ function bindCommentSubmit() {
             await loadComments();
         } catch (err) {
             console.error("댓글 등록 오류", err);
-            alert("댓글 등록에 실패했습니다.");
+            console.log("댓글 등록에 실패했습니다.");
         }
     });
 }
@@ -166,21 +175,25 @@ function renderImages(imageDtoList = []) {
     const imgContainer = document.getElementById("feed-image-container");
     imgContainer.innerHTML = "";
 
+    console.log("[DEBUG] feed183:");
     if (imageDtoList.length === 0) {
         imgContainer.innerHTML = "<div class='text-muted'>이미지가 없습니다.</div>";
+        console.log("[DEBUG] feed186:");
         return;
     }
 
     imageDtoList.forEach(image => {
         const wrapper = document.createElement("div");
         wrapper.className = "image-slot";
-
+        console.log("[DEBUG] feed193:");
         const img = document.createElement("img");
         img.src = `/images/${image.storedImageName}`;
         img.alt = image.originalImageName;
-
+        console.log("[DEBUG] feed197:");
         wrapper.appendChild(img);
+        console.log("[DEBUG] feed199:");
         imgContainer.appendChild(wrapper);
+        console.log("[DEBUG] feed201:");
     });
 }
 
@@ -230,6 +243,6 @@ async function deleteComment(commentId) {
         await loadComments();
     } catch (err) {
         console.error("댓글 삭제 오류", err);
-        alert("댓글 삭제에 실패했습니다.");
+        console.log("댓글 삭제에 실패했습니다.");
     }
 }
