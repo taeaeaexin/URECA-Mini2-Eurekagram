@@ -34,6 +34,7 @@ html, body {
     align-items: center;
     padding: 20px;
     border-radius: 12px;
+    margin-bottom: 90px;
 }
 
 /* 로고 */
@@ -59,7 +60,7 @@ label {
 /* 각 입력 그룹 */
 .form-group {
     margin-bottom: 16px;
-    width: 23vw;
+    width: 20vw;
 }
 
 /* 입력창, 셀렉트 */
