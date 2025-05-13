@@ -35,7 +35,7 @@
             <div>
                 <!-- 상단 검색창 + 버튼 그룹 -->
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <input type="text" class="form-control me-3" placeholder="검색할 닉네임을 입력해주세요." style="max-width: 300px;">
+                    <input type="text" id="input-search" class="form-control me-3" placeholder="검색할 닉네임을 입력해주세요." style="max-width: 300px;">
                     <div>
                         <button class="btn btn-outline-light">로그아웃</button>
                     </div>
@@ -44,10 +44,10 @@
                 <h1> 사용자 관리 </h1>
 
                 <div id="btnStatus" class="btn-group mb-3 mt-4">
-                    <button id="btnALL" class="btn btn-outline-secondary" onclick="listUsers('ALL')">전체</button>
-                    <button id="btnPENDING" class="btn btn-outline-warning" onclick="listUsers('PENDING')">승인 대기</button>
-                    <button id="btnACTIVE" class="btn btn-outline-success" onclick="listUsers('ACTIVE')">가입 완료</button>
-                    <button id="btnINACTIVE" class="btn btn-outline-danger" onclick="listUsers('INACTIVE')">차단</button>
+                    <button id="btnALL" class="btn btn-outline-secondary" onclick="btnStatusClicked('ALL')">전체</button>
+                    <button id="btnPENDING" class="btn btn-outline-warning" onclick="btnStatusClicked('PENDING')">승인 대기</button>
+                    <button id="btnACTIVE" class="btn btn-outline-success" onclick="btnStatusClicked('ACTIVE')">가입 완료</button>
+                    <button id="btnINACTIVE" class="btn btn-outline-danger" onclick="btnStatusClicked('INACTIVE')">차단</button>
                 </div>
 
                 <!-- 사용자 관리 테이블-->
@@ -100,7 +100,7 @@
             if (response.ok) {
                 // 인증 성공 → 페이지 보여주기
                 document.body.classList.remove("hidden");
-                listUsers("ALL");
+                listUsers();
 
             } else {
                 console.log("ok가 오지 않았습니다.")
@@ -113,11 +113,35 @@
         }
     })();
 
-    // 사용자 목록
-    async function listUsers(status) {
-        try {
+    // 현재 상태필터, 검색어 입력
+    const inputSearch = document.getElementById('input-search');
+    let currentStatus = 'ALL';
+    let currentNickname = '';
 
-            const response = await fetch("/users?status=" + status,{
+    // 상태 필터
+    function btnStatusClicked(status){
+        currentStatus = status;
+        currentNickname = inputSearch.value;
+        listUsers(currentStatus, currentNickname);
+    }
+
+    // 검색어 입력
+    inputSearch.addEventListener('keydown', async (event) => {
+        if (event.key === 'Enter') {
+            currentNickname = inputSearch.value;
+            await listUsers(currentStatus, currentNickname);
+        }
+    });
+
+    // 사용자 목록
+    async function listUsers(status='ALL', nickName='') {
+        try {
+            let url = "/users?"
+            const params = new URLSearchParams();
+            params.append('status',status);
+            if(nickName) params.append('nickname',nickName);
+
+            const response = await fetch(url + params.toString(),{
                 headers: {
                     "Authorization": `Bearer ${token}`
                 }
@@ -209,7 +233,7 @@
 
             if(data.statusCode === 200){
                 alert("수정 성공");
-                listUsers("ALL");
+                listUsers();
             }
             else{
                 alert("내 피드 조회 과정에서 오류 발생")
@@ -219,6 +243,7 @@
             window.location.href = "/";
         }
     }
+
 
 </script>
 </body>

@@ -21,8 +21,8 @@ public class UserServiceImpl implements UserService {
 
     // 상태별 사용자 리스트 조회 (활성/비활성/대기/전체 사용자)
     @Override
-    public List<UserManagementDto> userList(String status) {
-        return userRepository.findAllUsers(status);
+    public List<UserManagementDto> userList(String status, String nickName) {
+        return userRepository.findAllUsers(status, nickName);
     }
 
     // 사용자 상태 및 피드 상태 수정 (승인 / 차단 / 차단해제)

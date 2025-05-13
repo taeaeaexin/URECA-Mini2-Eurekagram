@@ -11,6 +11,6 @@ public interface UserRepositoryCustom {
 
     Optional<User> findActiveUserByEmail(String email);
 
-    List<UserManagementDto> findAllUsers(String status);
+    List<UserManagementDto> findAllUsers(String status, String nickName);
 
 }

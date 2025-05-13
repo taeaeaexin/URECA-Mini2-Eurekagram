@@ -21,10 +21,11 @@ public class UserController {
 
     // 사용자 목록 조회
     @GetMapping
-    public BaseResponseDto<List<UserManagementDto>> userList(@RequestParam String status) {
+    public BaseResponseDto<List<UserManagementDto>> userList(@RequestParam(required = false, defaultValue = "ALL") String status,
+                                                             @RequestParam(required = false) String nickname) {
 
         try {
-            List<UserManagementDto> userManagementDtoList = userService.userList(status);
+            List<UserManagementDto> userManagementDtoList = userService.userList(status, nickname);
 
             return BaseResponseDto.<List<UserManagementDto>>builder()
                     .statusCode(200)
@@ -66,4 +67,5 @@ public class UserController {
                     .build();
         }
     }
+
 }
