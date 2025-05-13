@@ -1,51 +1,57 @@
 package com.gram.eureka.eureka_gram_master.service.impl;
 
-import com.gram.eureka.eureka_gram_master.dto.BaseResponseDto;
-import com.gram.eureka.eureka_gram_master.dto.UserRequestDto;
-import com.gram.eureka.eureka_gram_master.dto.UserResponseDto;
+import com.gram.eureka.eureka_gram_master.dto.UserManagementDto;
 import com.gram.eureka.eureka_gram_master.entity.User;
+import com.gram.eureka.eureka_gram_master.entity.enums.Status;
+import com.gram.eureka.eureka_gram_master.repository.FeedRepository;
 import com.gram.eureka.eureka_gram_master.repository.UserRepository;
 import com.gram.eureka.eureka_gram_master.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final FeedRepository feedRepository;
 
+
+    // 상태별 사용자 리스트 조회 (활성/비활성/대기/전체 사용자)
     @Override
-    public BaseResponseDto<UserResponseDto> join(UserRequestDto userRequestDto) {
+    public Page<UserManagementDto> userList(String status, String nickName, Pageable pageable) {
+        return userRepository.findAllUsers(status, nickName, pageable);
+    }
 
-        // 이메일, 닉네임 중복 검사
-        boolean isDuplicatedEmail = userRepository.existsByEmail(userRequestDto.getEmail());
-        boolean isDuplicatedNickName = userRepository.existsByNickName(userRequestDto.getNickName());
 
-        if(isDuplicatedEmail) {
-            return BaseResponseDto.<UserResponseDto>builder()
-                    .statusCode(409)
-                    .message("이미 존재하는 이메일입니다.")
-                    .data(null)
-                    .build();
-        }
-        if(isDuplicatedNickName) {
-            return BaseResponseDto.<UserResponseDto>builder()
-                    .statusCode(409)
-                    .message("이미 존재하는 닉네임입니다.")
-                    .data(null)
-                    .build();
-        }
+    // 사용자 상태 및 피드 상태 수정 (승인 / 차단 / 차단해제)
+    @Override
+    @Transactional
+    public void updateUser(Long userId, String status) {
 
-        userRequestDto.setPassword(passwordEncoder.encode(userRequestDto.getPassword()));
-        UserResponseDto userResponseDto = UserResponseDto.from(
-                userRepository.save(User.of(userRequestDto))
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new UsernameNotFoundException("User not found")
         );
-        return BaseResponseDto.<UserResponseDto>builder()
-                .statusCode(200)
-                .message("회원가입이 성공적으로 진행되었습니다.")
-                .data(userResponseDto)
-                .build();
+
+        if("APPROVE".equals(status)) { // 승인
+            user.setStatus(Status.ACTIVE);
+
+        } else if("BLOCK".equals(status)) { // 차단
+            user.setStatus(Status.INACTIVE);
+            feedRepository.findByUserId(userId).forEach(feed -> {
+                feed.setStatus(Status.INACTIVE);
+            });
+
+        } else if("UNBLOCK".equals(status)){ // 차단 해제
+            user.setStatus(Status.ACTIVE);
+            feedRepository.findByUserId(userId).forEach(feed -> {
+                feed.setStatus(Status.ACTIVE);
+            });
+        }
     }
 }

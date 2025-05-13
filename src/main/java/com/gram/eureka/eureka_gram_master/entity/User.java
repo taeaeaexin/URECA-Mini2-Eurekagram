@@ -1,15 +1,11 @@
 package com.gram.eureka.eureka_gram_master.entity;
 
-import com.gram.eureka.eureka_gram_master.dto.UserRequestDto;
 import com.gram.eureka.eureka_gram_master.entity.enums.*;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
-@Getter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -33,19 +29,4 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role; // 역할
 
-
-    public static User of(UserRequestDto userRequestDto) {
-        return User.builder()
-                .userName(userRequestDto.getUserName())
-                .email(userRequestDto.getEmail())
-                .password(userRequestDto.getPassword())
-                .nickName(userRequestDto.getNickName())
-                .phoneNumber(userRequestDto.getPhoneNumber())
-                .batch(userRequestDto.getBatch())
-                .track(userRequestDto.getTrack())
-                .mode(userRequestDto.getMode())
-                .status(Status.PENDING) // 기본값은 PENDING 으로 설정
-                .role(Role.ROLE_USER) // 기본값은 ROLE_USER 으로 설정
-                .build();
-    }
 }

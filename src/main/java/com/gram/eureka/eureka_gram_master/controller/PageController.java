@@ -6,7 +6,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/page")
@@ -43,18 +42,6 @@ public class PageController {
         return "/html/detail-feed";
     }
 
-    @GetMapping("/my-feed")
-    public String moveMyFeedPage() {
-        return "/html/my-feed";
-    }
-
-    @GetMapping("/join")
-    public String moveJoinPage() {
-        return "/html/join";
-    }
-
-    @GetMapping("/modify-feed")
-    public String moveModifyFeedPage() {
-        return "/html/modify-feed";
-    }
+    @GetMapping("/manage-user")
+    public String moveManageUserPage() { return "/html/manage-user"; }
 }

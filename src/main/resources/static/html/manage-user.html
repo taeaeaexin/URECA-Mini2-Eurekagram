@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/add-feed.css" rel="stylesheet">
+
+    <title>사용자 관리</title>
+
+    <style>
+        body.hidden {
+            display: none !important;
+        }
+        span {
+            color: white;
+        }
+        a {
+            color: white;
+        }
+    </style>
+</head>
+<body class="hidden">
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-2 sidebar d-flex flex-column justify-content-center">
+            <a href="#">피드 관리</a>
+            <a href="/page/manage-user">사용자 관리</a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-10 main-content d-flex flex-column justify-content-between">
+            <div>
+                <!-- 상단 검색창 + 버튼 그룹 -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <input type="text" id="input-search" class="form-control me-3" placeholder="검색할 닉네임을 입력해주세요." style="max-width: 300px;">
+                    <div>
+                        <button class="btn btn-outline-light">로그아웃</button>
+                    </div>
+                </div>
+
+                <h1> 사용자 관리 </h1>
+
+                <div id="btnStatus" class="btn-group mb-3 mt-4">
+                    <button id="btnALL" class="btn btn-outline-secondary" onclick="btnStatusClicked('ALL')">전체</button>
+                    <button id="btnPENDING" class="btn btn-outline-warning" onclick="btnStatusClicked('PENDING')">승인 대기</button>
+                    <button id="btnACTIVE" class="btn btn-outline-success" onclick="btnStatusClicked('ACTIVE')">가입 완료</button>
+                    <button id="btnINACTIVE" class="btn btn-outline-danger" onclick="btnStatusClicked('INACTIVE')">차단</button>
+                </div>
+
+                <!-- 사용자 관리 테이블-->
+                <table class="table table-dark table-hover text-center mt-4">
+                    <thead>
+                    <tr>
+                        <th>이름</th>
+                        <th>닉네임</th>
+                        <th>전화번호</th>
+                        <th>가입일</th>
+                        <th>구분</th>
+                        <th>상태</th>
+                        <th >관리</th>
+                    </tr>
+                    </thead>
+                    <tbody id="user-container">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- 페이지네이션 -->
+        <div id="paginationWrapper"></div>
+    </div>
+</div>
+
+
+<script src="/js/format.js"></script>
+<script src="/js/pagination.js"></script>
+
+<script>
+    let token;
+    (async () => {
+        token = localStorage.getItem("jwt");
+
+        if (!token) {
+            // 토큰 없으면 로그인 페이지로 이동
+            console.log("jwt 토큰이 존재하지 않습니다.")
+            window.location.href = "/";
+            return;
+        }
+
+        console.log("jwt 토큰이 존재합니다. " + token)
+
+        try {
+            const response = await fetch("/page/authenticate", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            console.log("/page/authenticate 호출이 완료되었습니다.")
+
+            if (response.ok) {
+                // 인증 성공 → 페이지 보여주기
+                document.body.classList.remove("hidden");
+                listUsers();
+
+            } else {
+                console.log("ok가 오지 않았습니다.")
+                // 인증 실패 → 로그인 페이지로 이동
+                window.location.href = "/";
+            }
+        } catch (e) {
+            console.error("요청 실패:", e);
+            window.location.href = "/";
+        }
+    })();
+
+    // 현재 상태필터, 검색어 입력
+    const inputSearch = document.getElementById('input-search');
+    let currentStatus = 'ALL';
+    let currentNickname = '';
+
+    // 상태 필터
+    function btnStatusClicked(status){
+        currentStatus = status;
+        currentNickname = inputSearch.value;
+        listUsers(currentStatus, currentNickname);
+    }
+
+    // 검색어 입력
+    inputSearch.addEventListener('keydown', async (event) => {
+        if (event.key === 'Enter') {
+            currentNickname = inputSearch.value;
+            await listUsers(currentStatus, currentNickname);
+        }
+    });
+
+    let LIST_ROW_COUNT = 10; // limit. 한 페이지에 보여줄 개수
+    let OFFSET = 0;	// offset
+    let TOTAL_LIST_COUNT = 0; // 조회된 건수
+
+    let PAGE_LINK_COUNT = 5;	// 페이지에 보여줄 Pagination Button 수 (페이지링크 수)
+    let CURRENT_PAGE_INDEX = 1; // 현재 페이지 버튼 번호
+
+    // 사용자 목록 조회
+    async function listUsers(status='ALL', nickName='') {
+
+        let url = "/users?";
+        const params = new URLSearchParams();
+
+        params.append('page',CURRENT_PAGE_INDEX-1);
+        params.append('size',LIST_ROW_COUNT);
+        params.append('status',status);
+        if(nickName) params.append('nickname',nickName);
+
+        // 클릭한 버튼 활성화 제거
+        const buttons = document.querySelectorAll("#btnStatus button");
+        buttons.forEach(btn => btn.classList.remove("active"));
+
+        // 현재 클릭한 버튼에만 active 추가
+        const currentButton = document.getElementById("btn" + status);
+        if (currentButton) {
+            currentButton.classList.add("active");
+        }
+
+        try {
+            const response = await fetch(url + params.toString(),{
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            const responseData = await response.json();
+
+            if(responseData.statusCode === 200){
+                // const userList = responseData.data;
+
+                const userContainer = document.getElementById("user-container");
+
+                userContainer.innerHTML = "";
+
+                // 페이징
+                const pageData = responseData.data;
+                const userList = pageData.content;
+                TOTAL_LIST_COUNT = pageData.totalElements;
+                addPagination();
+
+
+                // 사용자 목록
+                userList.forEach(user => {
+                    const tr = document.createElement("tr");
+
+                    // 상태별로 버튼 활성화/비활성화
+                    const isApprovedEnabled = (user.status === 'PENDING');
+                    const isBlockedEnabled = (user.status === 'PENDING') || (user.status === 'ACTIVE');
+                    const isUnblockedEnabled = (user.status === 'INACTIVE');
+
+                    let approveButton = "";
+                    let blockButton = "";
+                    let unblockButton = "";
+
+                    if (isApprovedEnabled) {
+                        approveButton = `<button class="btn btn-success btn-sm" onclick="updateStatus('${user.userId}', 'APPROVE')">승인</button>`;
+                    }
+                    if (isBlockedEnabled) {
+                        blockButton = `<button class="btn btn-danger btn-sm" onclick="updateStatus('${user.userId}', 'BLOCK')">차단</button>`;
+                    }
+                    if (isUnblockedEnabled) {
+                        unblockButton = `<button class="btn btn-secondary btn-sm" onclick="updateStatus('${user.userId}', 'UNBLOCK')">차단 해제</button>`;
+                    }
+
+                    // 사용자 정보 표시
+                    tr.innerHTML = `
+                      <td>${user.userName}</td>
+                      <td>${user.nickName}</td>
+                      <td>${formatPhoneNumber(user.phoneNumber)}</td>
+                      <td>${formatDateTime(user.createdAt)}</td>
+                      <td>${formatTrack(user.track)} ${formatMode(user.mode)} ${formatBatch(user.batch)}</td>
+                      <td id="status-${user.userId}">${formatStatus(user.status)}</td>
+
+                      <td class="d-flex gap-2 justify-content-center">
+                            ${approveButton}
+                            ${blockButton}
+                            ${unblockButton}
+                      </td>
+                    `;
+                    userContainer.appendChild(tr);
+                });
+            }
+            else{
+                alert("내 피드 조회 과정에서 오류 발생")
+            }
+        } catch (e) {
+            console.error("요청 실패:", e);
+            window.location.href = "/";
+        }
+    }
+
+    // 사용자 상태 수정
+    async function updateStatus(userId, status) {
+        try {
+
+            const response = await fetch("/users/" + userId,{
+                method: "PUT",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({status})
+            });
+
+            const data = await response.json();
+
+            if(data.statusCode === 200){
+                alert("수정 성공");
+                listUsers();
+            }
+            else{
+                alert("내 피드 조회 과정에서 오류 발생")
+            }
+        } catch (e) {
+            console.error("요청 실패:", e);
+            window.location.href = "/";
+        }
+    }
+
+
+    function addPagination(){
+        makePaginationHtml(LIST_ROW_COUNT, PAGE_LINK_COUNT, CURRENT_PAGE_INDEX, TOTAL_LIST_COUNT, "paginationWrapper");
+    }
+
+    function movePage(pageIndex){
+        CURRENT_PAGE_INDEX = pageIndex;
+        listUsers(currentStatus, currentNickname);
+    }
+
+
+</script>
+</body>
+</html>
+
