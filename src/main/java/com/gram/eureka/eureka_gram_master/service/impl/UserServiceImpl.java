@@ -6,6 +6,7 @@ import com.gram.eureka.eureka_gram_master.entity.enums.Status;
 import com.gram.eureka.eureka_gram_master.repository.FeedRepository;
 import com.gram.eureka.eureka_gram_master.repository.UserRepository;
 import com.gram.eureka.eureka_gram_master.service.UserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -24,29 +25,29 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAllUsers(status);
     }
 
-    // 사용자 상태 수정 (승인 / 차단 / 차단해제)
+    // 사용자 상태 및 피드 상태 수정 (승인 / 차단 / 차단해제)
     @Override
+    @Transactional
     public void updateUser(Long userId, String status) {
 
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new UsernameNotFoundException("User not found")
         );
-        // status : APPROVE / BLOCK / UNBLOCK
+
         if("APPROVE".equals(status)) { // 승인
             user.setStatus(Status.ACTIVE);
 
         } else if("BLOCK".equals(status)) { // 차단
             user.setStatus(Status.INACTIVE);
+            feedRepository.findByUserId(userId).forEach(feed -> {
+                feed.setStatus(Status.INACTIVE);
+            });
 
         } else if("UNBLOCK".equals(status)){ // 차단 해제
             user.setStatus(Status.ACTIVE);
-
+            feedRepository.findByUserId(userId).forEach(feed -> {
+                feed.setStatus(Status.ACTIVE);
+            });
         }
-
-
-
-        // INACTIVE -> 사용자 피드 status=inactive
-        // ACTIVE -> 사용자 피드 status=active
-        userRepository.save(user);
     }
 }
