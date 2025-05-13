@@ -13,6 +13,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -57,12 +58,14 @@ public class LoginController {
 
         } catch (BadCredentialsException e) {
             log.warn("잘못된 자격 증명: {}", loginRequestDto.getEmail());
-            baseResponseDto.setMessage("이메일 또는 비밀번호가 일치하지 않습니다.");
+            baseResponseDto.setMessage("비밀번호가 일치하지 않습니다.");
+        } catch (UsernameNotFoundException e) {
+            log.warn("존재하지 않는 계정 : {}", loginRequestDto.getEmail());
+            baseResponseDto.setMessage("존재하지 않는 이메일입니다.");
         } catch (AuthenticationException e) {
-            log.error("인증 실패: {}", e.getMessage());
+            log.error("기타 인증 실패: {}", e.getMessage());
             baseResponseDto.setMessage("로그인 중 오류가 발생했습니다.");
         }
-
         return baseResponseDto;
     }
 }

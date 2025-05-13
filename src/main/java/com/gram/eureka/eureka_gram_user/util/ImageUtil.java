@@ -19,6 +19,6 @@ public class ImageUtil {
             throw new RuntimeException("파일 저장 실패", e);
         }
 
-        return "/images/" + fileName; // 프론트에 제공할 경로
+        return fileName;
     }
 }

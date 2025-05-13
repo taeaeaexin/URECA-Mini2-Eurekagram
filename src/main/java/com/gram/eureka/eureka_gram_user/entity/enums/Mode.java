@@ -4,8 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum Mode {
-    ONLINE("대면"),
-    OFFLINE("비대면");
+    OFFLINE("대면"),
+    ONLINE("비대면");
 
     private final String label;
 

@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="/css/main.css" rel="stylesheet">
+    <title>회원가입</title>
+
+    <style>
+        body {
+            background-color: black;
+            font-family: Arial, sans-serif;
+            color: white;
+            padding: 40px;
+            max-width: 500px;
+            margin: auto;
+        }
+
+        input {
+            display: block;
+            width: 100%;
+            height: 40px;
+        }
+
+        select {
+            height: 40px;
+            margin-top: 16px;
+        }
+
+        button {
+            background-color: #4472C4;
+            color: white;
+            margin-top: 24px;
+            padding: 10px;
+            width: 100%;
+        }
+
+        .card {
+            height: 100%;
+            background-color: #2B2D30;
+            overflow: hidden;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+    </style>
+
+</head>
+<body>
+<div class="card">
+    <h1 style="color:white; text-align: center">회원가입</h1>
+
+    <div>
+        <label for="userName">이름: </label>
+        <input type="text" name="userName" id="userName" placeholder="이름" onblur="validateUserName(this.value)">
+        <span id="userNameMessage" style="color:red;"></span>
+    </div>
+    <div>
+        <label for="email">Email: </label>
+        <input type="text" name="email" id="email" placeholder="Email" onblur="validateEmail(this.value)">
+        <span id="emailMessage" style="color:red;"></span>
+    </div>
+    <div>
+        <label for="password">비밀번호: </label>
+        <input type="password" name="password" id="password" placeholder="비밀번호" onblur="validatePassword(this.value)">
+        <span id="passwordMessage" style="color:red;"></span>
+    </div>
+    <div>
+        <label for="passwordcheck">비밀번호 확인: </label>
+        <input type="password" name="passwordcheck" id="passwordcheck" placeholder="비밀번호 확인" onblur="validatePasswordCheck(this.value)">
+        <span id="passwordCheckMessage" style="color:red;"></span>
+    </div>
+    <div>
+        <label for="nickName">닉네임: </label>
+        <input type="text" name="nickName" id="nickName" placeholder="닉네임" onblur="validateNickName(this.value)">
+        <span id="nickNameMessage" style="color:red;"></span>
+    </div>
+    <div>
+        <label for="phoneNumber">전화번호: </label>
+        <input type="text" name="phoneNumber" id="phoneNumber" placeholder="전화번호" onblur="validatePhoneNumber(this.value)">
+        <span id="phoneNumberMessage" style="color:red;"></span>
+    </div>
+    <div>
+        <label for="track">백엔드/프론트:</label>
+        <select id="track" name="track">
+            <option value="BACKEND">백엔드</option>
+            <option value="FRONTEND">프론트엔드</option>
+        </select>
+
+        <label for="mode">대면/비대면:</label>
+        <select id="mode" name="mode">
+            <option value="OFFLINE">대면</option>
+            <option value="ONLINE">비대면</option>
+        </select>
+
+        <label for="batch">기수:</label>
+        <select id="batch" name="batch">
+            <option value="FIRST">1기</option>
+            <option value="SECOND">2기</option>
+            <option value="THIRD">3기</option>
+            <option value="FOURTH">4기</option>
+            <option value="FIFTH">5기</option>
+            <option value="SIXTH">6기</option>
+            <option value="SEVENTH">7기</option>
+            <option value="EIGHTH">8기</option>
+            <option value="NINTH">9기</option>
+            <option value="TENTH">10기</option>
+        </select>
+    </div>
+
+    <input type="hidden" name="_csrf" value="" id="_csrf">
+
+    <div>
+        <button id="btnJoin" onclick="join()">회원가입</button>
+        <button id="btnBack" onclick="back()">취소</button>
+    </div>
+</div>
+<script>
+    // 취소 (로그인 화면으로)
+    function back(){
+        window.location.href = "/"
+    }
+
+    // 회원가입
+    async function join() {
+        const userName = document.getElementById("userName").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const passwordcheck = document.getElementById("passwordcheck").value;
+        const nickName = document.getElementById("nickName").value;
+        const phoneNumber = document.getElementById("phoneNumber").value;
+        const track = document.getElementById("track").value;
+        const mode = document.getElementById("mode").value;
+        const batch = document.getElementById("batch").value;
+
+        if(!validateUserName(userName)){
+            alert("이름을 확인하세요.")
+            return;
+        }
+        if(!validateEmail(email)){
+            alert("이메일을 확인하세요.")
+            return;
+        }
+        if(!validatePassword(password)){
+            alert("비밀번호를 확인하세요.")
+            return;
+        }
+        if(!validatePasswordCheck(passwordcheck)){
+            alert("비밀번호가 일치하지 않습니다.")
+            return;
+        }
+        if(!validateNickName(nickName)){
+            alert("닉네임을 확인하세요.")
+            return;
+        }
+        if(!validatePhoneNumber(phoneNumber)){
+            alert("전화번호를 확인하세요.")
+            return;
+        }
+
+
+        const response = await fetch("/users", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ userName, email, password, nickName, phoneNumber, track, mode, batch })
+        });
+
+        const result = await response.json();
+
+        if (result.statusCode === 200) {
+            window.location.href = "/"
+        } else {
+            alert(result.message)
+        }
+    }
+
+    // 유효성 검사
+    function validateUserName(userName){
+        if(userName == "") {
+            document.getElementById("userNameMessage").innerHTML = "이름을 입력하세요."
+            return false;
+        }
+        document.getElementById("userNameMessage").innerHTML = ""
+        return true;
+    }
+    function validateEmail(email){
+        if(email == "") {
+            document.getElementById("emailMessage").innerHTML = "이메일을 입력하세요."
+            return false;
+        }
+        document.getElementById("emailMessage").innerHTML = ""
+        return true;
+    }
+    function validatePassword(password){
+        if(password == "") {
+            document.getElementById("passwordMessage").innerHTML = "비밀번호를 입력하세요."
+            return false;
+        }
+        document.getElementById("passwordMessage").innerHTML = ""
+        return true;
+    }
+    function validatePasswordCheck(passwordcheck){
+        if(passwordcheck != document.getElementById("password").value) {
+            document.getElementById("passwordCheckMessage").innerHTML = "비밀번호가 일치하지 않습니다."
+            return false;
+        }
+        document.getElementById("passwordCheckMessage").innerHTML = ""
+        return true;
+    }
+    function validateNickName(nickName){
+        if(nickName == "") {
+            document.getElementById("nickNameMessage").innerHTML = "닉네임을 입력하세요."
+            return false;
+        }
+        document.getElementById("nickNameMessage").innerHTML = ""
+        return true;
+    }
+    function validatePhoneNumber(phoneNumber){
+        if(phoneNumber == "") {
+            document.getElementById("phoneNumberMessage").innerHTML = "전화번호를 입력하세요."
+            return false;
+        }
+        document.getElementById("phoneNumberMessage").innerHTML = ""
+        return true;
+    }
+</script>
+</body>
+</html>
