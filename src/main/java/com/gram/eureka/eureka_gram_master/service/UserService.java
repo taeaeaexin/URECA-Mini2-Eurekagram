@@ -6,6 +6,6 @@ import com.gram.eureka.eureka_gram_master.dto.UserManagementDto;
 import java.util.List;
 
 public interface UserService {
-    List<UserManagementDto> manageUsers();
+    List<UserManagementDto> userList(String status);
     void updateUser(Long userId, String status);
 }

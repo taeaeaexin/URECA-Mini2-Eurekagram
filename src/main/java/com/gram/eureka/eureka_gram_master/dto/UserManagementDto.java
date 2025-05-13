@@ -21,7 +21,6 @@ import java.util.Date;
 public class UserManagementDto {
     private Long userId;
     private String userName; // 사용자 이름
-    private String email; // 로그인시 사용할 이메일 (중복 체크 필요)
     private String nickName; // 로그인 이후 사용자 화면에 표시될 닉네임
     private String phoneNumber; // 휴대폰 번호
     private Batch batch; // 기수

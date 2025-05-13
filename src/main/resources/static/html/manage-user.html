@@ -15,6 +15,9 @@
         span {
             color: white;
         }
+        a {
+            color: white;
+        }
     </style>
 </head>
 <body class="hidden">
@@ -22,7 +25,9 @@
 <div class="container-fluid">
     <div class="row">
         <!-- Sidebar -->
-        <div class="col-2 sidebar d-flex flex-column justify-content-between">
+        <div class="col-2 sidebar d-flex flex-column justify-content-center">
+            <a href="#">피드 관리</a>
+            <a href="/page/manage-user">사용자 관리</a>
         </div>
 
         <!-- Main Content -->
@@ -32,13 +37,18 @@
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <input type="text" class="form-control me-3" placeholder="검색할 닉네임을 입력해주세요." style="max-width: 300px;">
                     <div>
-                        <button class="btn btn-outline-light me-2" onclick="addFeed()">글쓰기</button>
-                        <button class="btn btn-outline-light me-2">내 정보</button>
                         <button class="btn btn-outline-light">로그아웃</button>
                     </div>
                 </div>
 
                 <h1> 사용자 관리 </h1>
+
+                <div id="btnStatus" class="btn-group mb-3 mt-4">
+                    <button id="btnALL" class="btn btn-outline-secondary" onclick="listUsers('ALL')">전체</button>
+                    <button id="btnPENDING" class="btn btn-outline-warning" onclick="listUsers('PENDING')">승인 대기</button>
+                    <button id="btnACTIVE" class="btn btn-outline-success" onclick="listUsers('ACTIVE')">가입 완료</button>
+                    <button id="btnINACTIVE" class="btn btn-outline-danger" onclick="listUsers('INACTIVE')">차단</button>
+                </div>
 
                 <!-- 사용자 관리 테이블-->
                 <table class="table table-dark table-hover text-center mt-4">
@@ -50,7 +60,7 @@
                         <th>가입일</th>
                         <th>구분</th>
                         <th>상태</th>
-                        <th>관리</th>
+                        <th >관리</th>
                     </tr>
                     </thead>
                     <tbody id="user-container">
@@ -62,7 +72,7 @@
 </div>
 
 
-<script src="/js/common.js"></script>
+<script src="/js/format.js"></script>
 <script>
     let token;
     (async () => {
@@ -90,7 +100,7 @@
             if (response.ok) {
                 // 인증 성공 → 페이지 보여주기
                 document.body.classList.remove("hidden");
-                listUsers();
+                listUsers("ALL");
 
             } else {
                 console.log("ok가 오지 않았습니다.")
@@ -103,17 +113,27 @@
         }
     })();
 
-    // 내 피드 조회
-    async function listUsers() {
+    // 사용자 목록
+    async function listUsers(status) {
         try {
 
-            const response = await fetch("/users",{
+            const response = await fetch("/users?status=" + status,{
                 headers: {
                     "Authorization": `Bearer ${token}`
                 }
             });
 
             const responseData = await response.json();
+
+            // 클릭한 버튼 활성화 제거
+            const buttons = document.querySelectorAll("#btnStatus button");
+            buttons.forEach(btn => btn.classList.remove("active"));
+
+            // 현재 클릭한 버튼에만 active 추가
+            const currentButton = document.getElementById("btn" + status);
+            if (currentButton) {
+                currentButton.classList.add("active");
+            }
 
             if(responseData.statusCode === 200){
                 const userList = responseData.data;
@@ -122,11 +142,11 @@
 
                 userContainer.innerHTML = "";
 
-                // 사용자 목록 표시
+                // 사용자 목록
                 userList.forEach(user => {
                     const tr = document.createElement("tr");
 
-                    // 상태별 버튼 활성화/비활성화
+                    // 상태별로 버튼 활성화/비활성화
                     const isApprovedEnabled = (user.status === 'PENDING');
                     const isBlockedEnabled = (user.status === 'PENDING') || (user.status === 'ACTIVE');
                     const isUnblockedEnabled = (user.status === 'INACTIVE');
@@ -135,7 +155,6 @@
                     let blockButton = "";
                     let unblockButton = "";
 
-                    // 상태에 따라 버튼 활성화
                     if (isApprovedEnabled) {
                         approveButton = `<button class="btn btn-success btn-sm" onclick="updateStatus('${user.userId}', 'ACTIVE')">승인</button>`;
                     }
@@ -146,6 +165,7 @@
                         unblockButton = `<button class="btn btn-secondary btn-sm" onclick="updateStatus('${user.userId}', 'ACTIVE')">차단 해제</button>`;
                     }
 
+                    // 사용자 정보 표시
                     tr.innerHTML = `
                       <td>${user.userName}</td>
                       <td>${user.nickName}</td>
@@ -172,7 +192,7 @@
         }
     }
 
-    // 상태 수정
+    // 사용자 상태 수정
     async function updateStatus(userId, status) {
         try {
 
@@ -189,7 +209,7 @@
 
             if(data.statusCode === 200){
                 alert("수정 성공");
-                listUsers();
+                listUsers("ALL");
             }
             else{
                 alert("내 피드 조회 과정에서 오류 발생")

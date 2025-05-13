@@ -12,9 +12,9 @@ function formatDateTime(dateString) {
 
 // 상태 포맷
 function formatStatus(statusStr){
-    if(statusStr == "ACTIVE") return "사용가능";
-    else if(statusStr == "INACTIVE") return "사용불가";
-    else return "처리중";
+    if(statusStr == "ACTIVE") return "가입 완료";
+    else if(statusStr == "INACTIVE") return "차단";
+    else return "승인 대기";
 }
 
 function formatTrack(trackStr){

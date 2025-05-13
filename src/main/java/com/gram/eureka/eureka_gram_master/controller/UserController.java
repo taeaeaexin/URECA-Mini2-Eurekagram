@@ -18,20 +18,19 @@ import java.util.Map;
 public class UserController {
     private final UserService userService;
 
+
+    // 사용자 목록 조회
     @GetMapping
-    public BaseResponseDto<List<UserManagementDto>> ManageUsers(){
+    public BaseResponseDto<List<UserManagementDto>> userList(@RequestParam String status) {
 
         try {
-            List<UserManagementDto> userManagementDtoList = userService.manageUsers();
+            List<UserManagementDto> userManagementDtoList = userService.userList(status);
 
-            BaseResponseDto<List<UserManagementDto>> bs = BaseResponseDto.<List<UserManagementDto>>builder()
+            return BaseResponseDto.<List<UserManagementDto>>builder()
                     .statusCode(200)
                     .message("사용자 리스트 조회 성공")
                     .data(userManagementDtoList)
                     .build();
-
-            log.info(bs.getStatusCode().toString());
-            return bs;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -44,6 +43,7 @@ public class UserController {
         }
     }
 
+    // 사용자 상태 수정
     @PutMapping("/{userId}")
     public BaseResponseDto updateUser(@PathVariable Long userId,
                                       @RequestBody Map<String, String> statusMap) {
