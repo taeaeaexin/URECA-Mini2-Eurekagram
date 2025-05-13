@@ -114,6 +114,14 @@ body {
     font-size: 16px;
     margin-bottom: 8px;
     word-break: break-word;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 4;           /* 원하는 줄 수 */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.5em;
+    max-height: calc(1.5em * 4);     /* 4줄 기준 높이 제한 */
 }
 
 .feed-meta {
