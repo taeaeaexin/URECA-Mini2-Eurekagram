@@ -9,9 +9,13 @@ import com.gram.eureka.eureka_gram_master.repository.custom.UserRepositoryCustom
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -39,9 +43,10 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
         );
     }
 
+
     // 사용자 목록 조회
     @Override
-    public List<UserManagementDto> findAllUsers(String status, String nickName) {
+    public Page<UserManagementDto> findAllUsers(String status, String nickName, Pageable pageable) {
 
         BooleanBuilder builder = new BooleanBuilder();
 
@@ -56,7 +61,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
         if(nickName != null && !nickName.isEmpty())
             builder.and(user.nickName.like('%' + nickName + '%'));
 
-        return jpaQueryFactory
+        List<UserManagementDto> userList =  jpaQueryFactory
                 .select(Projections.bean(UserManagementDto.class,
                         user.id.as("userId"),
                         user.userName,
@@ -69,8 +74,16 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
                         user.status))
                 .from(user)
                 .where(builder)
-                .fetch()
-                .stream().toList();
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        JPAQuery<Long> count = jpaQueryFactory
+                .select(user.count())
+                .from(user)
+                .where(builder);
+
+        return PageableExecutionUtils.getPage(userList, pageable, count::fetchOne);
     }
 
 }

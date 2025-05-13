@@ -8,6 +8,8 @@ import com.gram.eureka.eureka_gram_master.repository.UserRepository;
 import com.gram.eureka.eureka_gram_master.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +21,13 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final FeedRepository feedRepository;
 
+
     // 상태별 사용자 리스트 조회 (활성/비활성/대기/전체 사용자)
     @Override
-    public List<UserManagementDto> userList(String status, String nickName) {
-        return userRepository.findAllUsers(status, nickName);
+    public Page<UserManagementDto> userList(String status, String nickName, Pageable pageable) {
+        return userRepository.findAllUsers(status, nickName, pageable);
     }
+
 
     // 사용자 상태 및 피드 상태 수정 (승인 / 차단 / 차단해제)
     @Override

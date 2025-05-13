@@ -6,6 +6,8 @@ import com.gram.eureka.eureka_gram_master.dto.UserManagementDto;
 import com.gram.eureka.eureka_gram_master.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,13 +23,14 @@ public class UserController {
 
     // 사용자 목록 조회
     @GetMapping
-    public BaseResponseDto<List<UserManagementDto>> userList(@RequestParam(required = false, defaultValue = "ALL") String status,
-                                                             @RequestParam(required = false) String nickname) {
+    public BaseResponseDto<Page<UserManagementDto>> userList(@RequestParam(required = false, defaultValue = "ALL") String status,
+                                                             @RequestParam(required = false) String nickname,
+                                                             Pageable pageable) {
 
         try {
-            List<UserManagementDto> userManagementDtoList = userService.userList(status, nickname);
+            Page<UserManagementDto> userManagementDtoList = userService.userList(status, nickname, pageable);
 
-            return BaseResponseDto.<List<UserManagementDto>>builder()
+            return BaseResponseDto.<Page<UserManagementDto>>builder()
                     .statusCode(200)
                     .message("사용자 리스트 조회 성공")
                     .data(userManagementDtoList)
@@ -36,7 +39,7 @@ public class UserController {
         } catch (Exception e) {
             e.printStackTrace();
 
-            return BaseResponseDto.<List<UserManagementDto>>builder()
+            return BaseResponseDto.<Page<UserManagementDto>>builder()
                     .statusCode(500)
                     .message("사용자 리스트 조회 실패")
                     .data(null)
