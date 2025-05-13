@@ -4,6 +4,9 @@ import com.gram.eureka.eureka_gram_master.entity.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -20,4 +23,7 @@ public class Feed extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private Status status; // 상태 관리
+
+    @OneToMany(mappedBy = "feed", cascade = CascadeType.ALL)
+    private List<Image> images = new ArrayList<>();
 }

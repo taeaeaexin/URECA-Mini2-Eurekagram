@@ -8,6 +8,7 @@ public class EurekaGramMasterApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(EurekaGramMasterApplication.class, args);
+		//test
 	}
 
 }

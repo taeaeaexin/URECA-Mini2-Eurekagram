@@ -1,61 +1,38 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <script src="/js/main.js"></script>
-    <link href="/css/main.css" rel="stylesheet">
     <title>Main</title>
-
-    <style>
-        body.hidden {
-            display: none !important;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/main.css">
 </head>
 <body class="hidden">
-<h1 id="welcome">main.html</h1>
 
-<script>
-    (async () => {
-        const token = localStorage.getItem("jwt");
+<div class="left-sidebar">
+    <div class="left-sidebar-logo"></div>
+    <div class="left-sidebar-menu"></div>
+    <div class="left-sidebar-menu"></div>
+    <div class="left-sidebar-menu"></div>
+</div>
 
-        if (!token) {
-            // 토큰 없으면 로그인 페이지로 이동
-            console.log("jwt 토큰이 존재하지 않습니다.")
-            window.location.href = "/";
-            return;
-        }
+<div class="top-navbar">
+    <div class="top-navbar-left">
+        <div class="top-navbar-search">
+            <input class="nav-search" type="text" placeholder="닉네임 검색" />
+        </div>
+    </div>
+    <div class="top-navbar-right">
+        <button class="top-navbar-button" onclick="window.location.href='/page/add-feed'">글쓰기</button>
+        <button class="top-navbar-button" onclick="window.location.href='/page/my-feed'">내 피드</button>
+        <button class="top-navbar-button" onclick="logout()">로그아웃</button>
+    </div>
+</div>
 
-        console.log("jwt 토큰이 존재합니다. " + token)
+<div class="main-area">
+    <div class="main-content"></div>
+    <div class="right-sidebar"></div>
+</div>
 
-        try {
-            const response = await fetch("/page/authenticate", {
-                method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }
-            });
-
-            console.log("/page/authenticate 호출이 완료되었습니다.")
-
-            if (response.ok) {
-                const email = await response.text();  // 서버에서 email만 보내므로 text로 받음
-                document.getElementById("welcome").innerText = `${email}님 환영합니다!`;
-                // 인증 성공 → 페이지 보여주기
-                document.body.classList.remove("hidden");
-            } else {
-                console.log("ok가 오지 않았습니다.")
-                // 인증 실패 → 로그인 페이지로 이동
-                window.location.href = "/";
-            }
-        } catch (e) {
-            console.error("요청 실패:", e);
-            window.location.href = "/";
-        }
-    })();
-</script>
+<script src="/js/main.js"></script>
 </body>
 </html>
