@@ -5,4 +5,5 @@ import com.gram.eureka.eureka_gram_master.dto.UserRequestDto;
 import com.gram.eureka.eureka_gram_master.dto.UserResponseDto;
 
 public interface UserService {
+    BaseResponseDto<UserResponseDto> join(UserRequestDto userRequestDto);
 }
