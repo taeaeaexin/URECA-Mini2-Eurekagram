@@ -43,6 +43,7 @@ body {
 .brand-logo {
     width: 140px;
     margin-bottom: 20px;
+    margin-left: 4px;
 }
 .sidebar-menu {
     display: flex;
