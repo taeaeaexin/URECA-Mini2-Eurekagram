@@ -114,21 +114,19 @@ public class FeedServiceTest {
     @DisplayName("testDetailFeed() : 피드 상세 조회 메소드 테스트.")
     public void testDetailFeed() {
         // given : testFeedId
-        // when
+
+        // when 첫 조회 (조회수 증가)
         FeedDto feedDto = feedService.detailFeed(testFeedId);
 
-        // 변경사항 즉시 반영, 1차캐시 비우기
-        em.flush();
-        em.clear();
-
         // then
-        // 첫 조회 (조회수 증가)
         assertNotNull(feedDto);
         assertEquals(testFeedId, feedDto.getFeedId());
         assertEquals(1L, feedDto.getFeedViewCount());
 
-        // 두번째 조회 (조회수 증가 X)
+        // when 두번째 조회 (조회수 증가 X)
         feedDto = feedService.detailFeed(testFeedId);
+
+        // then
         assertEquals(1L, feedDto.getFeedViewCount());
 
     }
