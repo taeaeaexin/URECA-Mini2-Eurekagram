@@ -189,6 +189,7 @@ body {
     /*border: 1px solid #333;*/
     cursor: pointer; /* ✅ 커서 변경 */
     transition: background-color 0.2s, transform 0.2s;
+
 }
 
 .feed-card:hover {

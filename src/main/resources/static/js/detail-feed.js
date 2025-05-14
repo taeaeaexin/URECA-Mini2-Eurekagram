@@ -59,6 +59,19 @@ window.onload = async () => {
         renderImages(feed.imageDtoList);
         document.getElementById("feed-content").textContent = feed.content;
 
+        document.getElementById("feed-writer").textContent = "@" + feed.writer.nickName;
+
+        // const dateObj = new Date(feed.createdDate);
+        // const formattedDate = dateObj.toLocaleString("ko-KR", {
+        //     year: "numeric",
+        //     month: "2-digit",
+        //     day: "2-digit",
+        //     hour: "2-digit",
+        //     minute: "2-digit"
+        // }).replace(/\./g, '년').replace('년 ', '월 ').replace('월 ', '일 ').replace(':', '시 ') + '분';
+        //
+        // document.getElementById("feed-date").textContent = formattedDate;
+
         // 수정/삭제 버튼 표시 조건
         if (feed.deleteUpdateYn === true) {
             const editBtn = document.getElementById("edit-feed-btn");
@@ -162,28 +175,52 @@ function bindCommentSubmit() {
         }
     });
 }
-
-// 이미지 렌더링
 function renderImages(imageDtoList = []) {
-    const imgContainer = document.getElementById("feed-image-container");
-    imgContainer.innerHTML = "";
+    const inner = document.getElementById("carousel-inner");
+    inner.innerHTML = "";
+
+    const carousel = document.getElementById("carouselExample");
+    const prevBtn = carousel.querySelector(".carousel-control-prev");
+    const nextBtn = carousel.querySelector(".carousel-control-next");
 
     if (imageDtoList.length === 0) {
-        imgContainer.innerHTML = "<div class='text-muted'>이미지가 없습니다.</div>";
+        carousel.style.display = "none"; // 캐러셀 자체 숨기기
         return;
     }
 
-    imageDtoList.forEach(image => {
-        const wrapper = document.createElement("div");
-        wrapper.className = "image-slot";
-
-        const img = document.createElement("img");
-        img.src = `/images/${image.storedImageName}`;
-        img.alt = image.originalImageName;
-
-        wrapper.appendChild(img);
-        imgContainer.appendChild(wrapper);
+    // 이미지 개수만큼 캐러셀 아이템 생성
+    imageDtoList.forEach((image, index) => {
+        const item = document.createElement("div");
+        item.className = `carousel-item ${index === 0 ? "active" : ""}`;
+        item.innerHTML = `
+            <img src="/images/${image.storedImageName}" class="d-block w-100" style="height: 600px; object-fit: cover;" alt="${image.originalImageName}">
+        `;
+        inner.appendChild(item);
     });
+
+    // 버튼 표시 여부
+    if (imageDtoList.length === 1) {
+        prevBtn.style.display = "none";
+        nextBtn.style.display = "none";
+    } else {
+        prevBtn.style.display = "block";
+        nextBtn.style.display = "block";
+    }
+
+    // 버튼 활성/비활성 상태 동기화
+    const updateButtonState = () => {
+        const items = carousel.querySelectorAll(".carousel-item");
+        const activeIndex = [...items].findIndex(item => item.classList.contains("active"));
+
+        prevBtn.disabled = activeIndex === 0;
+        nextBtn.disabled = activeIndex === items.length - 1;
+    };
+
+    // 이벤트 바인딩
+    carousel.addEventListener("slid.bs.carousel", updateButtonState);
+
+    // 초기 상태 업데이트
+    setTimeout(updateButtonState, 10);
 }
 
 // 댓글 렌더링
@@ -204,7 +241,8 @@ function renderComments(comments = []) {
         if (c.deleteYn === true) {
             const delBtn = document.createElement("button");
             delBtn.textContent = "삭제";
-            delBtn.className = "btn btn-danger btn-sm";
+            // delBtn.className = "btn btn-danger btn-sm";
+            delBtn.className = "comment-delete-btn";  // ✅ 반드시 있어야 함
             delBtn.onclick = () => deleteComment(c.commentId);
             row.appendChild(delBtn);
         }
