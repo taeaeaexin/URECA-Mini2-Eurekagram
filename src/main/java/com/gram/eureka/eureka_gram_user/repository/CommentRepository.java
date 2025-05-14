@@ -13,6 +13,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long>, Comment
             "SELECT c.feed.id, COUNT(c) " +
                     "FROM Comment c " +
                     "WHERE c.feed.id IN :feedIds " +
+                    "AND c.status = 'ACTIVE' " +
                     "GROUP BY c.feed.id"
     )
     List<Object[]> countByFeedId(@Param("feedIds") List<Long> feedIds);

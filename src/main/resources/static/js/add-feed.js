@@ -1,164 +1,169 @@
+/* ===========================================================================
+   add‑feed.js  –  “피드 작성” 전용 스크립트
+   (무한 루프 차단 + 슬라이드 삭제 시 올바른 인덱스 유지)
+   ========================================================================== */
 let token;
 
+/* ── 0) JWT 인증 후 화면 노출 ─────────────────────────────────────────────── */
 (async () => {
     token = localStorage.getItem("jwt");
+    if (!token) return location.replace("/");
 
-    if (!token) {
-        console.log("jwt 토큰이 존재하지 않습니다.");
-        window.location.href = "/";
-        return;
-    }
+    const ok = await fetch("/page/authenticate", {
+        method : "POST",
+        headers: { Authorization: `Bearer ${token}` }
+    }).then(r => r.ok).catch(()=>false);
 
-    try {
-        const response = await fetch("/page/authenticate", {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
-        });
-
-        if (response.ok) {
-            document.body.classList.remove("hidden");
-        } else {
-            window.location.href = "/";
-        }
-    } catch (e) {
-        console.error("요청 실패:", e);
-        window.location.href = "/";
-    }
+    if (!ok) return location.replace("/");
+    document.body.classList.remove("hidden");
 })();
 
-window.onload = () => {
-    const fileInput = document.getElementById("image-upload");
-    const carouselInner = document.getElementById("carousel-inner");
-    const carousel = document.getElementById("carouselExample");
-    const carouselInstance = bootstrap.Carousel.getOrCreateInstance(carousel);
-    const imageFiles = [];
+/* ─────────────────────────────────────────────────────────────────────────── */
+window.addEventListener("load", () => {
+    /* --- 캐싱 & 인스턴스 ---------------------------------------------------- */
+    const $fileInput     = document.getElementById("image-upload");
+    const $inner         = document.getElementById("carousel-inner");
+    const $carEl         = document.getElementById("carouselExample");
+    const carousel       = bootstrap.Carousel.getOrCreateInstance($carEl,
+        { interval:false, wrap:false });  // ◎ wrap false
+    const $prevBtn       = $carEl.querySelector(".carousel-control-prev");
+    const $nextBtn       = $carEl.querySelector(".carousel-control-next");
+    const $textarea      = document.getElementById("feed-textarea");
 
-    updateCarouselPlaceholder();
+    const imageFiles = [];   // File 객체 배열
 
-    fileInput.addEventListener("change", () => {
-        const file = fileInput.files[0];
-        if (!file) return;
+    /* ---------- placeholder 최초 세팅 ---------- */
+    drawPlaceholder();
 
-        const reader = new FileReader();
-        reader.onload = e => {
-            const index = imageFiles.length;
+    /* ---------- 이벤트 ---------- */
+    $fileInput.addEventListener("change", addFiles);
+    $inner     .addEventListener("click",  deleteSlide);
+    $carEl     .addEventListener("slid.bs.carousel", updateNav);
+    document.querySelector(".submit-btn")
+        .addEventListener("click", submitFeed);
+
+    /* ---------- 파일 선택 ---------- */
+    function addFiles(){
+        [...$fileInput.files].forEach(file=>{
+            // placeholder 있었으면 제거
+            if (!slideCount()) $inner.innerHTML = "";
+
+            const idx = imageFiles.length;   // 추가될 인덱스
             imageFiles.push(file);
 
-            if (index === 0) {
-                carouselInner.innerHTML = "";
-            }
+            appendSlide(URL.createObjectURL(file), idx); // 새 슬라이드
+            rebuildSlides(idx);                          // 인덱스 맞춰 다시 구성
+        });
+        $fileInput.value = "";   // 같은 파일 다시 선택 가능
+    }
 
-            const item = document.createElement("div");
-            item.className = `carousel-item ${index === 0 ? "active" : ""}`;
-            item.innerHTML = `
-                <div class="position-relative">
-                    <img src="${e.target.result}"
-                         class="d-block w-100"
-                         style="height: 600px; object-fit: cover;"
-                         alt="업로드 미리보기">
-                    <button type="button"
-                            class="delete-carousel-btn"
-                            data-index="${index}">&times;</button>
-                </div>
-            `;
-            carouselInner.appendChild(item);
-            updateCarouselButtons();
-
-            // DOM 반영 후 해당 슬라이드로 이동
-            setTimeout(() => {
-                carouselInstance.to(index);
-            }, 0);
-        };
-        reader.readAsDataURL(file);
-        fileInput.value = "";
-    });
-
-    carouselInner.addEventListener("click", e => {
+    /* ---------- 슬라이드 삭제 ---------- */
+    function deleteSlide(e){
         if (!e.target.classList.contains("delete-carousel-btn")) return;
-        const deleteIndex = +e.target.dataset.index;
-        imageFiles.splice(deleteIndex, 1);
 
-        const newIndex = deleteIndex === imageFiles.length
-            ? deleteIndex - 1
-            : deleteIndex;
+        const slide = e.target.closest(".carousel-item");
+        const idx   = +e.target.dataset.index;   // data-index 로 저장해둔 값
 
-        carouselInner.innerHTML = "";
-        if (imageFiles.length === 0) {
-            updateCarouselPlaceholder();
-        } else {
-            imageFiles.forEach((file, i) => {
-                const reader = new FileReader();
-                reader.onload = ev => {
-                    const item = document.createElement("div");
-                    item.className = `carousel-item ${i === newIndex ? "active" : ""}`;
-                    item.innerHTML = `
-                        <div class="position-relative">
-                            <img src="${ev.target.result}"
-                                 class="d-block w-100"
-                                 style="height: 600px; object-fit: cover;"
-                                 alt="업로드 미리보기">
-                            <button type="button"
-                                    class="delete-carousel-btn"
-                                    data-index="${i}">&times;</button>
-                        </div>
-                    `;
-                    carouselInner.appendChild(item);
-                };
-                reader.readAsDataURL(file);
-            });
-        }
-        updateCarouselButtons();
-    });
+        imageFiles.splice(idx,1);                // 배열에서 제거
+        rebuildSlides(idx === imageFiles.length ? idx-1 : idx); // 재구성
+    }
 
-    document.querySelector('.submit-btn').addEventListener('click', async () => {
-        const formData = new FormData();
-        const textarea = document.getElementById('feed-textarea');
-        const content = textarea.value.trim();
-
-        if (!content && imageFiles.length === 0) {
-            alert("내용 또는 이미지를 입력해주세요.");
-            return;
+    /* ---------- 실제 업로드 ---------- */
+    async function submitFeed(){
+        const content = $textarea.value.trim();
+        if (!content && imageFiles.length===0){
+            return alert("내용 또는 이미지를 입력해주세요.");
         }
 
-        formData.append("content", content);
-        imageFiles.forEach(file => formData.append("images", file));
+        const fd = new FormData();
+        fd.append("content", content);
+        imageFiles.forEach(f => fd.append("images", f));
 
-        try {
-            const response = await fetch("/feeds/", {
-                method: "POST",
-                headers: { Authorization: `Bearer ${token}` },
-                body: formData
+        try{
+            const r = await fetch("/feeds/", {
+                method : "POST",
+                headers: { Authorization:`Bearer ${token}` },
+                body   : fd
             });
-            if (!response.ok) throw new Error("서버 오류");
-            const result = await response.json();
-            window.location.href = `/page/detail-feed?id=${result.data.feedId}`;
-        } catch (error) {
-            console.error("업로드 실패", error);
+            if(!r.ok) throw 0;
+            const {data:{feedId}} = await r.json();
+            location.replace(`/page/detail-feed?id=${feedId}`);
+        }catch{
             alert("업로드 중 오류가 발생했습니다.");
         }
-    });
+    }
 
-    function updateCarouselButtons() {
-        const prev = carousel.querySelector(".carousel-control-prev");
-        const next = carousel.querySelector(".carousel-control-next");
-        if (imageFiles.length <= 1) {
-            prev.style.display = "none";
-            next.style.display = "none";
-        } else {
-            prev.style.display = "block";
-            next.style.display = "block";
+    /* ====================================================================== */
+    /* ---------------- util ---------------- */
+    function slideCount(){
+        return imageFiles.length;
+    }
+
+    /* 새 slide DOM 한 개 생성 */
+    function appendSlide(src, idx){
+        $inner.insertAdjacentHTML("beforeend", slideHTML(src,idx,false));
+    }
+
+    /* 인덱스(activeIdx)를 지정해서 캐러셀을 **한 방에** 다시 그림 */
+    function rebuildSlides(activeIdx=0){
+        if (imageFiles.length===0){
+            drawPlaceholder();
+            updateNav();
+            return;
+        }
+        let html="";
+        imageFiles.forEach((file,i)=>{
+            const src = URL.createObjectURL(file);
+            html += slideHTML(src,i, i===activeIdx);
+        });
+        $inner.innerHTML = html;
+        carousel.to(activeIdx);
+        updateNav();
+    }
+
+    /* Prev/Next 버튼 상태 및 표시 제어 */
+    function updateNav(){
+        const cnt     = slideCount();
+        const actIdx  = [...$inner.children]
+            .findIndex(el=>el.classList.contains("active"));
+
+        if (cnt<=1){
+            $prevBtn.style.display = $nextBtn.style.display = "none";
+        }else{
+            $prevBtn.style.display = $nextBtn.style.display = "block";
+            $prevBtn.disabled = (actIdx===0);
+            $nextBtn.disabled = (actIdx===cnt-1);
         }
     }
 
-    function updateCarouselPlaceholder() {
-        carouselInner.innerHTML = `
-            <div class="carousel-item active">
-                <div class="w-100 h-100 d-flex justify-content-center align-items-center text-muted fs-5 placeholder-slide">
-                    위 이미지 업로드를 클릭하여 업로드 해주세요.
-                </div>
-            </div>
-        `;
+    /* placeholder 한 개만 표시 */
+    function drawPlaceholder(){
+        $inner.innerHTML = `
+      <div class="carousel-item active">
+        <div class="w-100 h-100 d-flex justify-content-center align-items-center
+                    text-muted fs-5 placeholder-slide">
+          위 이미지 업로드를 클릭하여 업로드 해주세요.
+        </div>
+      </div>`;
+        carousel.pause();   // 자동 이동 & 키보드 전부 비활
     }
-};
+
+    /* slide HTML 조립 */
+    function slideHTML(src, idx, isActive){
+        return `
+    <div class="carousel-item${isActive?" active":""}">
+      <div class="position-relative">
+        <img src="${src}" class="d-block w-100"
+             style="height:600px;object-fit:cover;">
+        <button type="button" class="delete-carousel-btn"
+                data-index="${idx}">&times;</button>
+      </div>
+    </div>`;
+    }
+
+    /* 로그아웃 전역 */
+    window.logout = ()=>{
+        localStorage.removeItem("jwt");
+        location.replace("/");
+    };
+});

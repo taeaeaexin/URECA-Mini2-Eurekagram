@@ -108,12 +108,20 @@ window.onload = async () => {
         await loadComments(); // 댓글 렌더링
         bindCommentSubmit();  // 댓글 등록 이벤트
 
+        // 로그아웃
+        window.logout = () => {
+            localStorage.removeItem("jwt");
+            window.location.href = "/";
+        };
+
     } catch (err) {
         console.error("피드 불러오기 오류", err);
         alert("피드 정보를 불러오지 못했습니다.");
         location.href = "/page/main";
     }
 };
+
+
 
 // 댓글 조회
 async function loadComments() {
