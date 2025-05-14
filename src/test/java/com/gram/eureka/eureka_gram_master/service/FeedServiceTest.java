@@ -23,9 +23,11 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
+// Mockito 테스트
 @ExtendWith(MockitoExtension.class)
-class FeedServiceImplTest {
+class FeedServiceTest {
 
+    // Mock 처리
     @Mock FeedRepository feedRepository;
     @Mock FeedViewRepository feedViewRepository;
     @Mock CommentRepository commentRepository;
