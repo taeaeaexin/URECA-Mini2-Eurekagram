@@ -1,0 +1,197 @@
+body {
+    background-color: #000;
+    color: #e0e0e0;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.sidebar-menu {
+    color: #e0e0e0;
+    background: transparent;
+    transition: background 0.2s;
+}
+
+.sidebar-menu:hover {
+    background-color: #1f1f1f;
+}
+
+input.form-control {
+    background-color: #1e1e1e;
+    border: 1px solid #333;
+    /*color: #e0e0e0;*/
+}
+
+.table-dark {
+    background-color: #1c1c1c;
+}
+
+.table-dark thead th {
+    color: #f0f0f0;
+    background-color: #222;
+    border-bottom: 1px solid #444;
+}
+
+.table-dark tbody td {
+    color: #ddd;
+}
+
+.btn-outline-secondary {
+    border: none;
+    background-color: #3a3a3a;
+    color: #ddd;
+}
+/*.btn-outline-secondary:hover {*/
+/*    background-color: #555;*/
+/*    color: white;*/
+/*}*/
+
+.btn-outline-warning {
+    background-color: #4b3b00;
+    border: none;
+    color: #ffcc00;
+}
+/*.btn-outline-warning:hover {*/
+/*    background-color: #ffcc00;*/
+/*    color: black;*/
+/*}*/
+
+.btn-outline-success {
+    background-color: #113f2e;
+    border: none;
+    color: #4be58b;
+}
+/*.btn-outline-success:hover {*/
+/*    background-color: #4be58b;*/
+/*    color: black;*/
+/*}*/
+
+.btn-outline-danger {
+    background-color: #4b1f1f;
+    border: none;
+    color: #ff5e5e;
+}
+/*.btn-outline-danger:hover {*/
+/*    background-color: #ff5e5e;*/
+/*    color: black;*/
+/*}*/
+
+button.btn {
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 14px;
+}
+
+#paginationWrapper {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.form-control {
+    width: 100%;
+    max-width: 350px;
+    padding: 10px;
+    border-radius: 6px;
+    background-color: #1e1e1e;
+    border: none;
+    color: white;
+    font-size: 14px;
+}
+
+.table-dark {
+    background-color: transparent !important;
+    color: white;
+}
+
+.table-dark thead {
+    background-color: transparent;
+    border-bottom: 1px solid #333;
+}
+
+.table-dark thead th {
+    color: white;
+    background-color: transparent;
+    border-bottom: 1px solid #444;
+}
+
+.table-dark tbody tr {
+    background-color: transparent;
+}
+
+.table-dark tbody td {
+    color: white;
+    background-color: transparent;
+}
+
+.table-dark tbody tr:hover {
+    background-color: #000;
+}
+
+.table>tbody {
+    vertical-align: center !important;
+}
+
+.btn {
+    background-color: transparent;
+    gap: 10px;
+    color: white;
+}
+
+#paginationWrapper .page-link {
+    background-color: transparent;
+    color: white;
+    border: 1px solid #444;
+}
+
+#paginationWrapper .page-link:hover {
+    background-color: #1a1a1a;
+    color: white;
+}
+
+#paginationWrapper .active .page-link {
+    background-color: transparent;
+    color: white;
+    border-color: #444;
+}
+
+/*input.form-control {*/
+/*    background-color: #000;         !* 완전 검정 배경 *!*/
+/*    border: 1px solid #444;         !* 테두리 회색 *!*/
+/*    color: white;                   !* 입력 텍스트 색 *!*/
+/*    font-size: 14px;*/
+/*    border-radius: 6px;*/
+/*    padding: 10px;*/
+/*    box-shadow: none;              !* 포커스 시 외곽선 제거 *!*/
+/*    outline: none;                 !* 포커스 시 파란 테두리 제거 *!*/
+/*}*/
+
+/*!* ✅ placeholder 색상도 흰색으로 *!*/
+/*input.form-control::placeholder {*/
+/*    color: #ccc;*/
+/*    opacity: 1;*/
+/*}*/
+
+
+input.form-control {
+    background-color: #000;
+    border: 1px solid #444;
+    color: white;
+    font-size: 14px;
+    border-radius: 6px;
+    padding: 10px;
+    outline: none !important;
+    box-shadow: none !important;   /* 🔥 파란 테두리 제거 */
+}
+
+/* 포커스 상태에서도 파란 테두리 생기지 않도록 확실히 제거 */
+input.form-control:focus {
+    background-color: #1e1e1e !important; /* 포커스 시에도 어두운 배경 유지 */
+    outline: none !important;
+    box-shadow: none !important;
+    border: 1px solid #666;  /* 필요하다면 테두리 색상 유지 또는 수정 */
+    color: white !important;
+}
+
+/* placeholder 색상 흰색 */
+input.form-control::placeholder {
+    color: #ccc;
+    opacity: 1;
+}
