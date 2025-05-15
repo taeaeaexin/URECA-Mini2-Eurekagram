@@ -31,7 +31,7 @@ class CommentServiceTest {
     private UserRepository userRepository;
 
     @Test
-    void removeComment_shouldUpdateStatus() {
+    void removeComment() {
         Long commentId = 1L;
         when(commentRepository.updateStatusById(commentId)).thenReturn(commentId);
 
