@@ -34,7 +34,7 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom {
     @Override
     public FeedDto findFeedInfoById(Long feedId, Long userId) {
         List<Tuple> fetch = jpaQueryFactory.select(
-                        feed.id, feed.content,
+                        feed.id, feed.content,feed.createdAt,
                         user.id, user.userName, user.email, user.nickName, user.batch, user.track, user.mode,
                         image.id, image.originalImageName, image.storedImageName, image.imageExtension
                 )
@@ -64,6 +64,7 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom {
                     dtoId -> new FeedDto(
                             dtoId,
                             t.get(feed.content),
+                            t.get(feed.createdAt),
                             new UserDto(
                                     t.get(user.id),
                                     t.get(user.nickName),

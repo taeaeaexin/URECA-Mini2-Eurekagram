@@ -1,84 +1,261 @@
-body {
-    background-color: #1f1f1f;
-    color: white;
+/* ============================================================================
+   add-feed.css
+   ============================================================================ */
+
+/* 1) 기본 초기화 */
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
-.sidebar {
-    background-color: #2b2b2b;
-    height: 100vh;
-    padding: 20px;
+body.hidden {
+    display: none;
 }
 
-.main-content {
-    padding: 20px;
-    height: 100vh;
+body {
+    font-family: Arial, sans-serif;
+    background-color: #000;
+    color: #fff;
 }
 
-.image-container {
+/* 2) 전체 래퍼 */
+.main-wrapper {
     display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    margin-bottom: 15px;
+    width: 100%;
+    height: 100vh;
 }
 
-.image-slot {
+/* 3) 좌측 사이드바 */
+.left-sidebar {
+    width: 250px;
+    background-color: #000;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-right: 1px solid #333;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+}
+
+.brand-logo {
+    width: 140px;
+    margin-bottom: 20px;
+    margin-left: 4px;
+}
+
+.sidebar-menu {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #eee;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 10px 30px;
+}
+
+.sidebar-menu:hover {
+    background-color: #111;
+    border-radius: 6px;
+}
+
+.logout-btn {
+    margin-top: auto;
+    padding-top: 30px;
+}
+
+/* 4) 우측 메인 콘텐츠 */
+.main-content {
+    margin-left: 250px;
     flex: 1;
-    height: 400px;
-    background-color: white;
-    color: #777;
-    border: 2px dashed #ccc;
-    border-radius: 12px;
-    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 80px;
+}
+
+/* 5) 상단 헤더 */
+.feed-header {
+    width: 100%;
+    max-width: 1000px;
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
+    padding: 14px 24px;
+    border-bottom: 1px solid #333;
+}
+
+/*   – 업로드 버튼 (헤더 왼쪽) */
+.upload-btn-wrapper {
+    position: absolute;
+    left: 24px;
+}
+
+.upload-btn-wrapper label {
+    font-size: 14px;
+    color: #fff;
     cursor: pointer;
+    border-bottom: 1px solid transparent;
+}
+
+.upload-btn-wrapper label:hover {
+    color: #0d6efd;
+}
+
+.upload-btn-wrapper input[type="file"] {
+    display: none;
+}
+
+/*   – 중앙 제목 */
+.feed-title {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/*   – 공유하기 버튼 (헤더 오른쪽) */
+.submit-btn {
+    position: absolute;
+    right: 24px;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    /*border-bottom: 1px solid #888;*/
+    /*padding-bottom: 2px;*/
+}
+
+/* 6) 업로드 + 텍스트 섹션 */
+.upload-section {
+    display: flex;
+    width: 1000px;
+    height: 600px;
+    background-color: #111;
+    margin-top: 30px;
     overflow: hidden;
 }
 
-.image-slot img {
+/* 6-1) 왼쪽 이미지 영역 */
+.left-half {
+    position: relative; /* ← 반드시 있어야 합니다 */
+    width: 50%;
+    height: 100%;
+    background-color: #111;
+}
+
+/*     · 캐러셀 전체 */
+#carouselExample {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.carousel-inner,
+.carousel-item {
+    width: 100%;
+    height: 100%;
+}
+
+.carousel-inner img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.delete-btn {
+/*     · prev/next 버튼 */
+.carousel-control-prev,
+.carousel-control-next {
     position: absolute;
-    top: 5px;
-    right: 5px;
-    background-color: rgba(0, 0, 0, 0.6);
-    border: none;
-    color: white;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    z-index: 5;
+}
+
+.carousel-control-prev {
+    left: 10px;
+}
+
+.carousel-control-next {
+    right: 10px;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    filter: invert(1);
+}
+
+/*     · “이미지를 업로드해주세요” 안내문구 */
+.placeholder-slide {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    color: #888 !important;
     font-size: 16px;
+    text-align: center;
+    pointer-events: none;
+    width: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/*     · 이미지 삭제 버튼 */
+.delete-carousel-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    border: none;
+    font-size: 20px;
     border-radius: 50%;
-    width: 25px;
-    height: 25px;
+    width: 30px;
+    height: 30px;
     cursor: pointer;
-    display: none;
     z-index: 10;
 }
 
-.textarea-box {
-    background-color: white;
-    padding: 10px;
-    color: black;
-    border-radius: 12px;
+/* 6-2) 오른쪽 텍스트 영역 */
+.right-half {
+    position: relative;
+    width: 50%;
+    height: 100%;
+    background-color: #1c1e21;
 }
 
-.textarea-box textarea {
-    border-radius: 8px;
+.feed-textarea {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    color: #fff;
+    border: none;
+    padding: 16px;
+    font-size: 16px;
+    resize: none;
 }
 
-input[type="file"] {
-    display: none;
+.feed-textarea:focus {
+    outline: none;
 }
 
-.placeholder {
-    background-color: transparent !important;
+/*     · 텍스트 placeholder */
+.textarea-placeholder {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #666;
+    font-size: 16px;
+    pointer-events: none;
+    text-align: center;
 }
 
-.hidden {
-    display: none;
-}
+.submit-btn:hover { color:#0d6efd; }
