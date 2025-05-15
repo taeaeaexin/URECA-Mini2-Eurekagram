@@ -1,5 +1,5 @@
 window.onload = () => {
-    const token = localStorage.getItem("jwt");
+    const token = sessionStorage.getItem("jwt");
     if (!token) {
         window.location.href = "/";
         return;
@@ -146,7 +146,7 @@ window.onload = () => {
 
             // 로그아웃
             window.logout = () => {
-                localStorage.removeItem("jwt");
+                sessionStorage.removeItem("jwt");
                 window.location.href = "/";
             };
 

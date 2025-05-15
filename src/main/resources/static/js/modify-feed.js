@@ -11,7 +11,7 @@ window.addEventListener("load", bootstrapModify);   // onload 충돌 방지
 /* ────────────────────────────────────────────────────────────────────────── */
 async function bootstrapModify () {
     /* 1) JWT 인증 -------------------------------------------------------- */
-    token = localStorage.getItem("jwt");
+    token = sessionStorage.getItem("jwt");
     if (!token || !(await auth())) return location.replace("/");
 
     document.body.classList.remove("hidden");
@@ -220,6 +220,6 @@ async function bootstrapModify () {
 
 /* 로그아웃 (공통) */
 function logout () {
-    localStorage.removeItem("jwt");
+    sessionStorage.removeItem("jwt");
     location.replace("/");
 }

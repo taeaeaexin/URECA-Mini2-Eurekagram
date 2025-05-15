@@ -58,7 +58,7 @@
         const result = await response.json();
 
         if (result.statusCode === 200) {
-            localStorage.setItem("jwt", result.data.token);
+            sessionStorage.setItem("jwt", result.data.token);
             window.location.href = "/page/main";
         } else {
             alert("ID 혹은 PW를 확인해 주세요.");

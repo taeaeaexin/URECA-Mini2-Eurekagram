@@ -4,7 +4,7 @@ let feedId;
 
 // JWT 인증 및 인증 완료 후 본문 렌더링 시작
 (async () => {
-    token = localStorage.getItem("jwt");
+    token = sessionStorage.getItem("jwt");
 
     if (!token) {
         console.log("jwt 토큰이 존재하지 않습니다.");
@@ -110,7 +110,7 @@ window.onload = async () => {
 
         // 로그아웃
         window.logout = () => {
-            localStorage.removeItem("jwt");
+            sessionStorage.removeItem("jwt");
             window.location.href = "/";
         };
 

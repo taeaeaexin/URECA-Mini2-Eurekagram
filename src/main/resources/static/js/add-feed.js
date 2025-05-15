@@ -6,7 +6,7 @@ let token;
 
 /* ── 0) JWT 인증 후 화면 노출 ─────────────────────────────────────────────── */
 (async () => {
-    token = localStorage.getItem("jwt");
+    token = sessionStorage.getItem("jwt");
     if (!token) return location.replace("/");
 
     const ok = await fetch("/page/authenticate", {
@@ -163,7 +163,7 @@ window.addEventListener("load", () => {
 
     /* 로그아웃 전역 */
     window.logout = ()=>{
-        localStorage.removeItem("jwt");
+        sessionStorage.removeItem("jwt");
         location.replace("/");
     };
 });

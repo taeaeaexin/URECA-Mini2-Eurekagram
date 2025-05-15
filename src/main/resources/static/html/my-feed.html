@@ -86,7 +86,7 @@
     /* ───────────────── JWT 인증 ───────────────── */
     let token;
     (async()=>{
-        token = localStorage.getItem("jwt");
+        token = sessionStorage.getItem("jwt");
         if(!token) return location.replace("/");
 
         const ok = await fetch("/page/authenticate",
@@ -125,7 +125,7 @@
 
     /* 로그아웃 */
     function logout(){
-        localStorage.removeItem("jwt");
+        sessionStorage.removeItem("jwt");
         location.replace("/");
     }
 </script>
