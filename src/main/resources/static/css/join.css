@@ -1,0 +1,179 @@
+/* 전체 초기화 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* 페이지 레이아웃 */
+html, body {
+    width: 100%;
+    height: 100vh;
+    background-color: #000;
+    font-family: Arial, sans-serif;
+    color: white;
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 래퍼 */
+.signup-wrapper {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    margin: 0 auto;
+}
+
+/* 회원가입 박스 */
+.signup-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 90px;
+}
+
+/* 로고 */
+.brand-logo {
+    width: 160px;
+    margin-bottom: -15px;
+}
+
+/* 제목 */
+h2 {
+    margin-bottom: 20px;
+    font-size: 22px;
+}
+
+/* 라벨 */
+label {
+    font-size: 13px;
+    margin-bottom: 4px;
+    display: inline-block;
+    color: #ccc;
+}
+
+/* 각 입력 그룹 */
+.form-group {
+    margin-bottom: 16px;
+    width: 20vw;
+}
+
+/* 입력창, 셀렉트 */
+input, select {
+    width: 100%;
+    height: 44px;
+    padding: 0 12px;
+    border-radius: 6px;
+    border: 1px solid #333;
+    background-color: #1e1e1e;
+    color: white;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+input::placeholder {
+    color: #888;
+}
+
+/* 셀렉트 행 */
+.form-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.form-row select {
+    flex: 1;
+    height: 44px;
+    padding: 0 12px;
+    font-size: 14px;
+    border-radius: 6px;
+    background-color: #1e1e1e;
+    color: white;
+    border: 1px solid #333;
+}
+
+/* 버튼 */
+.signup-btn, .cancel-btn {
+    width: 100%;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.signup-btn {
+    background-color: #3797ef;
+    color: white;
+}
+
+.signup-btn:hover {
+    background-color: #2d7bd6;
+}
+
+.cancel-btn {
+    background-color: #333;
+    color: #ccc;
+}
+
+.cancel-btn:hover {
+    background-color: #444;
+}
+
+/* 에러 메시지 */
+.error {
+    font-size: 12px;
+    color: #ff6b6b;
+    min-height: 2px; /* ✅ 항상 공간 확보 */
+    margin-top: 2px;
+    display: block;
+}
+
+/* 구분선 */
+.divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    margin: 20px 0;
+    color: #aaa;
+    font-size: 14px;
+}
+
+.divider hr {
+    flex: 1;
+    border: none;
+    border-top: 1px solid #888;
+}
+
+.divider span {
+    white-space: nowrap;
+    color: #ccc;
+}
+
+/* 로그인 링크 */
+.login-link {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 14px;
+    color: #ccc;
+}
+
+.login-link a {
+    color: #3797ef;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
