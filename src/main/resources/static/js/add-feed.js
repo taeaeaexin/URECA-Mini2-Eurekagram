@@ -44,6 +44,14 @@ window.addEventListener("load", () => {
 
     /* ---------- 파일 선택 ---------- */
     function addFiles(){
+        // 1) 최대 5장 제한 검사
+        const files = [...$fileInput.files];
+        if (imageFiles.length + files.length > 5) {
+            alert("최대 5장까지 업로드 가능합니다.");
+            $fileInput.value = "";
+            return;
+        }
+
         [...$fileInput.files].forEach(file=>{
             // placeholder 있었으면 제거
             if (!slideCount()) $inner.innerHTML = "";

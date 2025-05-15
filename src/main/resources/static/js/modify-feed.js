@@ -100,21 +100,34 @@ async function bootstrapModify () {
     }
 
     /* 파일 추가 */
+    // ─ 파일 추가 (최대 5장 제한) ─────────────────────────────────
     function addFiles () {
-        [...$input.files].forEach(file => {
-            if (!slideCount()) $inner.innerHTML = "";   // placeholder 제거
+        // 1) 최대 5장 제한 검사
+        const files = [...$input.files];
+        if (slideCount() + files.length > 5) {
+            alert("최대 5장까지 업로드 가능합니다.");
+            $input.value = "";
+            return;
+        }
+
+        // 2) 실제 파일 추가 로직
+        files.forEach(file => {
+            // placeholder 제거
+            if (!slideCount()) $inner.innerHTML = "";
 
             const rdr = new FileReader();
             rdr.onload = e => {
-                const idx = slideCount();               // 현재 슬라이드 개수
-                newFiles.push(file);
-                appendSlide(e.target.result, idx);      // 새 이미지
-                updateNav();
-                setTimeout(() => carousel.to(idx), 0);  // 방금 추가한 슬라이드로 이동
+                const idx = slideCount();       // 현재 슬라이드 개수
+                newFiles.push(file);            // 새 파일 저장
+                appendSlide(e.target.result, idx); // 새 이미지 DOM 추가
+                updateNav();                    // Prev/Next 버튼 상태 갱신
+                setTimeout(() => carousel.to(idx), 0); // 부드럽게 이동
             };
             rdr.readAsDataURL(file);
         });
-        $input.value = "";      // 동일 파일 재선택 가능
+
+        // 3) input 초기화 (같은 파일 재선택 가능)
+        $input.value = "";
     }
 
     /* ─ 슬라이드 삭제 (X 버튼) */
