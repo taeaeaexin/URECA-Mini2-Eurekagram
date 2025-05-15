@@ -6,6 +6,7 @@ import com.gram.eureka.eureka_gram_master.dto.MyFeedDto;
 import com.gram.eureka.eureka_gram_master.dto.MyFeedsResponseDto;
 import com.gram.eureka.eureka_gram_master.dto.query.FeedDto;
 import com.gram.eureka.eureka_gram_master.entity.Feed;
+import com.gram.eureka.eureka_gram_master.entity.FeedView;
 import com.gram.eureka.eureka_gram_master.entity.Image;
 import com.gram.eureka.eureka_gram_master.entity.User;
 import com.gram.eureka.eureka_gram_master.entity.enums.Status;
@@ -78,9 +79,24 @@ public class FeedServiceImpl implements FeedService {
     }
 
     @Override
-    public FeedDto detailFeed(Long id) {
-        FeedDto feedDto = feedRepository.findFeedInfoById(id);
-        Long feedViewCount = feedViewRepository.getFeedViewCount(id);
+    public FeedDto detailFeed(Long feedId) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName(); // 기본적으로 username 반환
+        User findUser = userRepository.findByEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException("User not found")
+        );
+
+        Long userId = findUser.getId();
+        if (feedViewRepository.findExistByFeedIdAndUserId(feedId, userId)) {
+            FeedView feedView = FeedView.builder()
+                    .user(findUser)
+                    .feed(feedRepository.findById(feedId).get())
+                    .build();
+
+            feedViewRepository.save(feedView);
+        }
+
+        FeedDto feedDto = feedRepository.findFeedInfoById(feedId, userId);
+        Long feedViewCount = feedViewRepository.getFeedViewCount(feedId);
         feedDto.setFeedViewCount(feedViewCount);
         return feedDto;
     }
@@ -136,6 +152,8 @@ public class FeedServiceImpl implements FeedService {
 
         return feeds.stream().map(feed -> {
             FeedResponseDto dto = new FeedResponseDto();
+            dto.setNickName(feed.getUser().getNickName());
+            dto.setCreateDate(feed.getCreatedAt());
             dto.setFeedId(feed.getId());
             dto.setContent(feed.getContent());
             dto.setImages(

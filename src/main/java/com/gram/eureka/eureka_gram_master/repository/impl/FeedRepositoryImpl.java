@@ -37,9 +37,9 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom {
     private final UserRepository userRepository;
 
     @Override
-    public FeedDto findFeedInfoById(Long id) {
+    public FeedDto findFeedInfoById(Long feedId, Long userId)  {
         List<Tuple> fetch = jpaQueryFactory.select(
-                        feed.id, feed.content,
+                        feed.id, feed.content,feed.createdAt,
                         user.id, user.userName, user.email, user.nickName, user.batch, user.track, user.mode,
                         image.id, image.originalImageName, image.storedImageName, image.imageExtension
                 )
@@ -47,33 +47,29 @@ public class FeedRepositoryImpl implements FeedRepositoryCustom {
                 .innerJoin(feed.user, user)
                 .leftJoin(image).on(image.feed.eq(feed))
                 .where(
-                        feed.id.eq(id)
+                        feed.id.eq(feedId)
                                 .and(feed.status.eq(Status.ACTIVE))
                 )
                 .fetch();
-
-        String email = SecurityContextHolder.getContext().getAuthentication().getName(); // 기본적으로 username 반환
-        User findUser = userRepository.findByEmail(email).orElseThrow(
-                () -> new UsernameNotFoundException("User not found")
-        );
 
         // ── 3. Stream 그룹핑으로 DTO 완성 ───────────────
         Map<Long, FeedDto> map = new LinkedHashMap<>();
 
         for (Tuple t : fetch) {
-            Long feedId = t.get(feed.id);
+            Long tupleFeedId = t.get(feed.id);
             Boolean deleteUpdateYn;
-            if (t.get(user.id).equals(findUser.getId())) {
+            if (t.get(user.id).equals(userId)) {
                 deleteUpdateYn = true;
             } else {
                 deleteUpdateYn = false;
             }
             /* feedId 당 DTO 1개만 */
             FeedDto dto = map.computeIfAbsent(
-                    feedId,
+                    tupleFeedId,
                     dtoId -> new FeedDto(
                             dtoId,
                             t.get(feed.content),
+                            t.get(feed.createdAt),
                             new UserDto(
                                     t.get(user.id),
                                     t.get(user.nickName),
