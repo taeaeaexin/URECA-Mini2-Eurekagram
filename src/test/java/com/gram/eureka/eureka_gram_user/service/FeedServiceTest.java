@@ -50,7 +50,7 @@ public class FeedServiceTest {
     @Autowired
     private EntityManager em;
 
-    private Long testFeedId_user, testLastFeedId;
+    private Long testFeedId, testLastFeedId;
 
     @BeforeEach
     public void SetUp(){
@@ -96,7 +96,8 @@ public class FeedServiceTest {
         feedRepository.save(feed1);
         feedRepository.save(feed2);
         feedRepository.save(feed3);
-        testFeedId_user = feed1.getId();
+
+        testFeedId = feed1.getId();
         testLastFeedId = feed3.getId()+1;
 
 
@@ -159,9 +160,33 @@ public class FeedServiceTest {
         em.clear();
     }
 
-
-
     @Order(1)
+    @Test
+    @Transactional
+    @DisplayName("testDetailFeed() : 피드 상세 조회 메소드 테스트.")
+    public void testDetailFeed() {
+        // given
+        // when 첫 조회 (조회수 증가)
+        FeedDto feedDto = feedService.detailFeed(testFeedId);
+
+        em.flush();
+        em.clear();
+
+        // then:
+        assertNotNull(feedDto);
+        assertEquals(testFeedId, feedDto.getFeedId());
+        assertEquals(1L, feedDto.getFeedViewCount());
+
+        // when 두 번째 조회 (조회수 증가X)
+        FeedDto feedDto2 = feedService.detailFeed(testFeedId);
+        em.flush();
+
+        // then
+        assertEquals(1L, feedDto2.getFeedViewCount());
+
+    }
+
+    @Order(2)
     @Test
     @Transactional
     @DisplayName("testCreateFeed() : 피드 생성 메소드 테스트.")
@@ -186,60 +211,6 @@ public class FeedServiceTest {
     }
 
 
-    @Order(2)
-    @Test
-    @Transactional
-    @DisplayName("testDetailFeed() : 피드 상세 조회 메소드 테스트.")
-    public void testDetailFeed() {
-        // given
-        User user3 = User.builder()
-                .email("test3@naver.com")
-                .nickName("test3")
-                .password("testpw")
-                .status(Status.ACTIVE)
-                .role(Role.ROLE_USER)
-                .build();
-        userRepository.save(user3);
-        em.flush();
-        em.clear();
-
-        // 인증 정보 설정
-        SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(user3.getEmail(), null)
-        );
-
-        Feed feed = Feed.builder()
-                .content("test content")
-                .user(user3)
-                .status(Status.ACTIVE)
-                .build();
-
-        feedRepository.save(feed);
-        em.flush();
-        em.clear();
-
-        // when 첫 조회 (조회수 증가)
-        FeedDto feedDto = feedService.detailFeed(feed.getId());
-        em.flush();
-
-        // then
-        assertNotNull(feedDto);
-        assertEquals(feed.getId(), feedDto.getFeedId());
-        assertEquals(1L, feedDto.getFeedViewCount());
-
-        // when 두번째 조회 (조회수 증가 X)
-        FeedDto feedDto2 = feedService.detailFeed(feed.getId());
-        em.flush();
-
-        // then
-        assertEquals(1L, feedDto2.getFeedViewCount());
-
-        // 인증 정보 정리
-        SecurityContextHolder.clearContext();
-
-    }
-
-
     @Order(3)
     @Test
     @Transactional
@@ -247,14 +218,14 @@ public class FeedServiceTest {
     public void testUpdateFeed_Delete() {
         // given : testFeedId
         // when
-        FeedResponseDto feedResponseDto = feedService.updateFeed(testFeedId_user);
+        FeedResponseDto feedResponseDto = feedService.updateFeed(testFeedId);
 
         em.flush();
         em.clear(); // 1차캐시 비우기. 이거 해야 아래에서 findById할 때 DB에서 최신값 가져옴.
 
         // then
         assertEquals(1L, feedResponseDto.getFeedCount()); // 삭제됐다면 1
-        assertEquals(Status.INACTIVE, feedRepository.findById(testFeedId_user).get().getStatus());
+        assertEquals(Status.INACTIVE, feedRepository.findById(testFeedId).get().getStatus());
     }
 
 
@@ -294,7 +265,7 @@ public class FeedServiceTest {
         // then
         assertEquals(3, response.size());
         FeedResponseDto feedResponseDto =  response.stream()
-                .filter(dto -> dto.getFeedId().equals(testFeedId_user))
+                .filter(dto -> dto.getFeedId().equals(testFeedId))
                 .findFirst()
                 .orElseThrow();
         assertEquals(2L, feedResponseDto.getCommentCount());
@@ -330,7 +301,7 @@ public class FeedServiceTest {
         // then
         assertEquals(2, response.size());
         FeedResponseDto feedResponseDto =  response.stream()
-                .filter(dto -> dto.getFeedId().equals(testFeedId_user))
+                .filter(dto -> dto.getFeedId().equals(testFeedId))
                 .findFirst()
                 .orElseThrow();
         assertEquals(2L, feedResponseDto.getCommentCount());
@@ -365,7 +336,7 @@ public class FeedServiceTest {
                 "fake-image-content".getBytes()
         ));
         FeedRequestDto feedRequestDto = new FeedRequestDto();
-        feedRequestDto.setId(testFeedId_user);
+        feedRequestDto.setId(testFeedId);
         feedRequestDto.setContent("updated content");
         feedRequestDto.setImages(images);
         feedRequestDto.setRemainImageIds(Collections.emptyList());
@@ -377,7 +348,7 @@ public class FeedServiceTest {
         em.clear();
 
         // then
-        Feed updatedFeed = feedRepository.findById(testFeedId_user).orElseThrow();
+        Feed updatedFeed = feedRepository.findById(testFeedId).orElseThrow();
         assertEquals("updated content", updatedFeed.getContent());
 
         List<Image> updatedImages = updatedFeed.getImages();
@@ -385,7 +356,7 @@ public class FeedServiceTest {
         assertEquals(1, updatedImages.size());
         assertEquals("jpg", updatedImages.get(0).getImageExtension());
 
-        assertEquals(testFeedId_user, response.getFeedId());
+        assertEquals(testFeedId, response.getFeedId());
     }
 
 }
