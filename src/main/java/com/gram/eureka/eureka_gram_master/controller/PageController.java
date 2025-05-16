@@ -32,8 +32,16 @@ public class PageController {
         return "/html/main";
     }
 
+    @GetMapping("/add-feed")
+    public String moveAddFeedPage() {
+        return "/html/add-feed";
+    }
+
     @GetMapping("/detail-feed")
     public String moveDetailFeedPage() {
         return "/html/detail-feed";
     }
+
+    @GetMapping("/manage-user")
+    public String moveManageUserPage() { return "/html/manage-user"; }
 }

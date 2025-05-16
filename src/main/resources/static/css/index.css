@@ -1,0 +1,147 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #000;
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 전체 감싸는 영역 */
+.page-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+}
+
+/* 로그인 레이아웃 */
+.login-wrapper {
+    display: flex;
+    max-width: 900px;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    margin-top: 60px;
+    margin-bottom: 30px;
+    height: 100vh;
+}
+
+/* 왼쪽 이미지 */
+.login-left img {
+    width: 500px;
+    height: 70vh;
+    border-radius: 35px;
+    object-fit: cover;
+    margin-right: 40px;
+}
+
+/* 오른쪽 로그인 */
+.login-right {
+    width: 100%;
+    max-width: 320px;
+}
+
+.login-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: transparent;
+    margin-bottom: 70px;
+}
+
+.brand-logo {
+    width: 180px;
+    height: auto;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 10px;
+    background-color: #121212;
+    border: 1px solid #333;
+    border-radius: 6px;
+    color: white;
+    font-size: 14px;
+}
+
+input::placeholder {
+    color: #888;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    background-color: #3797ef;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.login-btn:hover {
+    background-color: #2d7bd6;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    margin: 20px 0;
+    color: #aaa;
+    font-size: 14px;
+}
+
+.divider hr {
+    flex: 1;
+    border: none;
+    border-top: 1px solid #888;
+}
+
+.divider span {
+    white-space: nowrap;
+    color: #ccc;
+}
+
+.help-links {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 13px;
+    color: #aaa;
+}
+
+.help-links a {
+    color: #3797ef;
+    text-decoration: none;
+}
+
+.help-links a:hover {
+    text-decoration: underline;
+}
+
+.page-footer {
+    text-align: center;
+    font-size: 13px;
+    color: #999;
+    padding: 20px 0;
+}
+
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px #1e1e1e inset !important;
+    -webkit-text-fill-color: white !important;
+
+    transition: background-color 5000s ease-in-out 0s; /* 크롬의 transition 무효화 */
+}

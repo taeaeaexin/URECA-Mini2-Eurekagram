@@ -1,5 +1,4 @@
-package com.gram.eureka.eureka_gram_master.init;//package com.gram.eureka.eureka_gram_user.init;
-
+package com.gram.eureka.eureka_gram_master.init;
 
 import com.gram.eureka.eureka_gram_master.entity.Comment;
 import com.gram.eureka.eureka_gram_master.entity.Feed;
@@ -28,7 +27,7 @@ public class TestDataLoader {
 
     @PostConstruct
     public void init() {
-        createUser();
+//        createUser();
         // createFeed();
     }
 
@@ -91,22 +90,22 @@ public class TestDataLoader {
     // 사용자 정보 데이터 생성
     public void createUser() {
         // ACTIVE 사용자 3명
-        for (int i = 1; i <= 3; i++) {
-            User user = User.builder()
-                    .userName("활성사용자" + i)
-                    .email("active" + i + "@naver.com")
-                    .password(passwordEncoder.encode("1234"))
-                    .nickName("active_user" + i)
-                    .phoneNumber("0101000" + String.format("%04d", i))
-                    .batch(Batch.SECOND)
-                    .track(Track.BACKEND)
-                    .mode(Mode.OFFLINE)
-                    .status(Status.ACTIVE)
-                    .role(Role.ROLE_USER)
-                    .build();
-
-            userRepository.save(user);
-        }
+//        for (int i = 1; i <= 3; i++) {
+//            User user = User.builder()
+//                    .userName("활성사용자" + i)
+//                    .email("active" + i + "@naver.com")
+//                    .password(passwordEncoder.encode("1234"))
+//                    .nickName("active_user" + i)
+//                    .phoneNumber("0101000" + String.format("%04d", i))
+//                    .batch(Batch.SECOND)
+//                    .track(Track.BACKEND)
+//                    .mode(Mode.OFFLINE)
+//                    .status(Status.ACTIVE)
+//                    .role(Role.ROLE_USER)
+//                    .build();
+//
+//            userRepository.save(user);
+//        }
 
 //        // PENDING 사용자 2명
 //        for (int i = 1; i <= 2; i++) {

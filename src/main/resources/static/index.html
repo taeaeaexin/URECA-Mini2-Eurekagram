@@ -4,22 +4,42 @@
     <meta charset="UTF-8">
     <title>로그인</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="/css/index.css">
 </head>
 <body>
 
-<div class="container">
-  <div class="login-container">
-       <div class="logo">logo</div>
-        <h2>URECAGRAM</h2>
-        <p>비공개형 커뮤니티 (??)에 오신걸 환영합니다</p>
+<div class="page-container">
+    <div class="login-wrapper">
+        <!-- 왼쪽 이미지 -->
+        <div class="login-left">
+            <img src="/logo/login_logo_6.svg" alt="홍보 이미지">
+        </div>
 
-        <input type="email" id="email" placeholder="이메일을 입력해주세요" />
+        <!-- 오른쪽 로그인 -->
+        <div class="login-right">
+            <div class="login-box">
+                <img class="brand-logo" src="/logo/login_logo_8.png" alt="Eureka Gram 로고">
 
-        <input type="password" id="password" placeholder="비밀번호를 입력해주세요" />
+                <input type="email" id="email" placeholder="이메일 또는 사용자 이름" />
+                <input type="password" id="password" placeholder="비밀번호" />
 
-        <button onclick="login()">관리자 로그인</button>
+                <button class="login-btn" onclick="login()">로그인</button>
+
+                <div class="divider">
+                    <hr><span>또는</span><hr>
+                </div>
+
+                <div class="help-links">
+                    관리자가 아니신가요? <a href="http://localhost:8081/">일반 사용자 페이지 이동</a>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <!-- 하단 안내 문구 -->
+    <footer class="page-footer">
+        This space is for admin of the Eureka Bootcamp. Enjoy it freely!
+    </footer>
 </div>
 
 <script>
@@ -38,18 +58,13 @@
         const result = await response.json();
 
         if (result.statusCode === 200) {
-            // 이후 로컬스토리지 저장도 가능
-            localStorage.setItem("jwt", result.data.token);
-            window.location.href = "/page/main"
+            sessionStorage.setItem("jwt", result.data.token);
+            window.location.href = "/page/main";
         } else {
-            alert("ID 혹은 PW를 확인해 주세요.")
+            alert("ID 혹은 PW를 확인해 주세요.");
         }
     }
-
-    async function join() {
-        window.location.href="/page/join"
-    }
-
 </script>
+
 </body>
 </html>
