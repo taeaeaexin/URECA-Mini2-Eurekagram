@@ -78,6 +78,7 @@ button.btn {
     border-radius: 6px;
     padding: 6px 14px;
     font-size: 14px;
+    border: 1px solid #444;
 }
 
 #paginationWrapper {
@@ -126,7 +127,7 @@ button.btn {
 }
 
 .table>tbody {
-    vertical-align: center !important;
+    vertical-align: middle !important;
 }
 
 .btn {
