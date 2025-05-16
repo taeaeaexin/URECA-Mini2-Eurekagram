@@ -143,17 +143,17 @@ public class TestDataLoader {
 //            userRepository.save(user);
 //        }
 //
-//        // 관리자 1명
-//        User admin = User.builder()
-//                .userName("관리자")
-//                .email("admin@naver.com")
-//                .password(passwordEncoder.encode("1234"))
-//                .nickName("test_admin")
-//                .phoneNumber("01099998888")
-//                .status(Status.ACTIVE)
-//                .role(Role.ROLE_ADMIN)
-//                .build();
-//
-//        userRepository.save(admin);
+        // 관리자 1명
+        User admin = User.builder()
+                .userName("관리자")
+                .email("admin@naver.com")
+                .password(passwordEncoder.encode("1234"))
+                .nickName("test_admin")
+                .phoneNumber("01099998888")
+                .status(Status.ACTIVE)
+                .role(Role.ROLE_ADMIN)
+                .build();
+
+        userRepository.save(admin);
     }
 }
