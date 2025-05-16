@@ -153,6 +153,8 @@ public class FeedServiceImpl implements FeedService {
 
         return feeds.stream().map(feed -> {
             FeedResponseDto dto = new FeedResponseDto();
+            dto.setNickName(feed.getUser().getNickName());
+            dto.setCreateDate(feed.getCreatedAt());
             dto.setFeedId(feed.getId());
             dto.setContent(feed.getContent());
             dto.setImages(
