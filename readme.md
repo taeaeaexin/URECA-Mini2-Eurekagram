@@ -1,16 +1,17 @@
-# eureka-gram-user 레포지토리 입니다. 
-
+# ✨ Eurekagram
+> 유레카그램은 유레카 부트캠프 참여자들만을 위한 비공개 커뮤니티 피드형 SNS 입니다.  
+> 개발 기간 : 2025.05.08 ~ 25.05.16
 # ✨ 기획 의도
 유레카그램은 유레카 부트캠프 참여자들만을 위한 비공개 커뮤니티 피드형 SNS 입니다.
 사진과 짧은 글을 통해 서로의 일상을 공유하고, 유레카 부트캠프라는 공통된 소속감을 기반으로 자연스럽게
 소통할 수 있도록 돕습니다.
 
 # ✨ 팀원 소개
-| 이름   | MBTI | 사진                                                       | GitHub                                        | 역할 | 파트               |
-|--------|------|------------------------------------------------------------|-----------------------------------------------|------|--------------------|
-| 서보인 | ESFJ | <img src="https://avatars.githubusercontent.com/u/0000001" width="80"/> | [@sbi1024](https://github.com/sbi1024)        | 팀장 | BackEnd/FrontEnd   |
-| 문태신 |      | <img src="https://avatars.githubusercontent.com/u/0000002" width="80"/> | [@taeaeaexin](https://github.com/taeaeaexin)  | 팀원 | BackEnd/FrontEnd   |
-| 박소연 |      | <img src="https://avatars.githubusercontent.com/u/0000003" width="80"/> | [@so-yeon1](https://github.com/so-yeon1)      | 팀원 | BackEnd/FrontEnd   |
+| 이름 | 사진                                                       | GitHub                                        | 역할 | 파트               |
+|--------|------------------------------------------------------------|-----------------------------------------------|------|--------------------|
+| 서보인 | <img src="https://avatars.githubusercontent.com/u/0000001" width="80"/> | [@sbi1024](https://github.com/sbi1024)        | 팀장 | BackEnd/FrontEnd   |
+| 문태신 | <img src="https://avatars.githubusercontent.com/u/0000002" width="80"/> | [@taeaeaexin](https://github.com/taeaeaexin)  | 팀원 | BackEnd/FrontEnd   |
+| 박소연 | <img src="https://avatars.githubusercontent.com/u/0000003" width="80"/> | [@so-yeon1](https://github.com/so-yeon1)      | 팀원 | BackEnd/FrontEnd   |
 
 
 # ✨ 필요한 기능
