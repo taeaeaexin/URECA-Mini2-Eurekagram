@@ -1,20 +1,61 @@
 # ✨ Eurekagram
 > 유레카그램은 유레카 부트캠프 참여자들만을 위한 비공개 커뮤니티 피드형 SNS 입니다.  
 > 개발 기간 : 2025.05.08 ~ 25.05.16
-# ✨ 기획 의도
-유레카그램은 유레카 부트캠프 참여자들만을 위한 비공개 커뮤니티 피드형 SNS 입니다.
-사진과 짧은 글을 통해 서로의 일상을 공유하고, 유레카 부트캠프라는 공통된 소속감을 기반으로 자연스럽게
-소통할 수 있도록 돕습니다.
 
-# ✨ 팀원 소개
+<br>
+
+## 📑 목차
+- [팀원 소개](#-팀원-소개)
+- [기획 의도](#-기획-의도)
+- [기술 스택](#-기술-스택)
+- [기능 상세](#-기능-상세)
+- [트러블슈팅](#-트러블슈팅)
+- [한계점](#-한계와-개선-방향)
+
+<br>
+
+## 👤 팀원 소개
 | 이름 | 사진                                                       | GitHub                                        | 역할 | 파트               |
 |--------|------------------------------------------------------------|-----------------------------------------------|------|--------------------|
 | 서보인 | <img src="https://avatars.githubusercontent.com/u/0000001" width="80"/> | [@sbi1024](https://github.com/sbi1024)        | 팀장 | BackEnd/FrontEnd   |
 | 문태신 | <img src="https://avatars.githubusercontent.com/u/0000002" width="80"/> | [@taeaeaexin](https://github.com/taeaeaexin)  | 팀원 | BackEnd/FrontEnd   |
 | 박소연 | <img src="https://avatars.githubusercontent.com/u/0000003" width="80"/> | [@so-yeon1](https://github.com/so-yeon1)      | 팀원 | BackEnd/FrontEnd   |
 
+<br>
 
-# ✨ 필요한 기능
+# 🎯 기획 의도
+유레카그램은 유레카 부트캠프 참여자들만을 위한 비공개 커뮤니티 피드형 SNS 입니다.
+사진과 짧은 글을 통해 서로의 일상을 공유하고, 유레카 부트캠프라는 공통된 소속감을 기반으로 자연스럽게
+소통할 수 있도록 돕습니다.
+
+<br>
+
+## 🧱 기술 스택
+
+<b>Back-End</b>
+<p align="left">
+  <a href="https://skillicons.dev">
+    <img src="https://skillicons.dev/icons?i=java,spring,gradle,mysql&theme=light" />
+  </a>
+</p>
+
+<b>Front-End</b>
+<p align="left">
+  <a href="https://skillicons.dev">
+    <img src="https://skillicons.dev/icons?i=html,css,js&theme=light" />
+  </a>
+</p>
+
+<b>Collaboration-Tool</b>
+<p align="left">
+  <a href="https://skillicons.dev">
+    <img src="https://skillicons.dev/icons?i=git,github,discord&theme=light" />
+  </a>
+</p>
+
+<br>
+
+## 🔧 기능 상세
 ### ⚡️ 일반 사용자
 1. 로그인 기능
 2. 회원 가입 기능
@@ -35,7 +76,7 @@
 7. 사용자 정보 삭제 기능
 
 
-# ✨ 필요한 페이지
+## ✨ 필요한 페이지
 ### ⚡ 일반 사용자
 1. 로그인 페이지
 2. 회원 가입 페이지
@@ -53,26 +94,6 @@
 4. 사용자 관리 페이지 - 승인 / 미승인 (검색 기능 필요)
 5. 사용자 관리 페이지 - 정보 변경 (검색 기능 필요)
 
+## 🔍 트러블슈팅
 
-# ✨ 기술 스택
-
-### Back-End
-<p align="left">
-  <a href="https://skillicons.dev">
-    <img src="https://skillicons.dev/icons?i=java,spring,gradle,mysql&theme=light" />
-  </a>
-</p>
-
-### Front-End
-<p align="left">
-  <a href="https://skillicons.dev">
-    <img src="https://skillicons.dev/icons?i=html,css,js&theme=light" />
-  </a>
-</p>
-
-### Collaboration-Tool
-<p align="left">
-  <a href="https://skillicons.dev">
-    <img src="https://skillicons.dev/icons?i=git,github,discord&theme=light" />
-  </a>
-</p>
+## ⏳ 한계와 개선 방향
