@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8"/>
+    <title>내 피드</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <!-- add‑feed 레이아웃 공용 -->
+    <link href="/css/add-feed.css" rel="stylesheet"/>
+
+    <!-- “내 피드” 오버라이드 -->
+    <style>
+        /* 메인 영역 여백 + 가운데 정렬 */
+        .main-content{
+            display:block;                 /* 기존 flex 해제 */
+            margin-left:250px;             /* 사이드바 폭 */
+            padding:40px 24px 120px;       /* ↑ 좌우 ↓바닥 여유 */
+            text-align:center;
+        }
+
+        /* 썸네일 */
+        .myfeed-img{
+            width:100%; height:350px;
+            object-fit:cover;
+            border-radius:8px;
+            transition:opacity .2s;
+        }
+        .myfeed-img:hover{opacity:.8}
+
+        /* 자동 그리드 */
+        .feed-grid{
+            display:grid;
+            gap:24px;           /* ↑ row-gap   ↑ column-gap   */
+            grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+            max-width:1100px;
+            margin:0 auto;
+
+            padding-bottom:60px;
+        }
+    </style>
+</head>
+<body class="hidden">
+<div class="main-wrapper">
+
+    <!-- ◀ 사이드바 -->
+    <div class="left-sidebar">
+        <img class="brand-logo" src="/logo/login_logo_8.png" alt="Eureka Gram 로고">
+        <div class="sidebar-menu" onclick="window.location.href='/page/main'">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 32 32" fill="white" style="margin-right: 8px;">
+                <path d="M32 19l-6-6v-9h-4v5l-6-6-16 16v1h4v10h10v-6h4v6h10v-10h4z"></path>
+            </svg>
+            홈
+        </div>
+        <div class="sidebar-menu" onclick="window.location.href='/page/add-feed'">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 32 32" fill="white" style="margin-right: 8px;">
+                <path d="M27 0c2.761 0 5 2.239 5 5 0 1.126-0.372 2.164-1 3l-2 2-7-7 2-2c0.836-0.628 1.874-1 3-1zM2 23l-2 9 9-2 18.5-18.5-7-7-18.5 18.5zM22.362 11.362l-14 14-1.724-1.724 14-14 1.724 1.724z"></path>
+            </svg>
+            글쓰기
+        </div>
+        <div class="sidebar-menu" onclick="window.location.href='/page/my-feed'">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 32 32" fill="white" style="margin-right: 8px;">
+                <path d="M18 22.082v-1.649c2.203-1.241 4-4.337 4-7.432 0-4.971 0-9-6-9s-6 4.029-6 9c0 3.096 1.797 6.191 4 7.432v1.649
+             c-6.784 0.555-12 3.888-12 7.918h28c0-4.030-5.216-7.364-12-7.918z">
+                </path>
+            </svg>
+            내 피드
+        </div>
+        <div class="sidebar-menu logout-btn" onclick="logout()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 32 32" fill="white" style="margin-right: 8px;">
+                <path d="M20 4.581v4.249c1.131 0.494 2.172 1.2 3.071 2.099 1.889 1.889 2.929 4.4 2.929 7.071s-1.040 5.182-2.929 7.071c-1.889 1.889-4.4 2.929-7.071 2.929s-5.182-1.040-7.071-2.929c-1.889-1.889-2.929-4.4-2.929-7.071s1.040-5.182 2.929-7.071c0.899-0.899 1.94-1.606 3.071-2.099v-4.249c-5.783 1.721-10 7.077-10 13.419 0 7.732 6.268 14 14 14s14-6.268 14-14c0-6.342-4.217-11.698-10-13.419zM14 0h4v16h-4z"></path>
+            </svg>
+            로그아웃
+        </div>
+    </div>
+
+    <!-- ▶ 메인 -->
+    <div class="main-content">
+        <h5 id="feed-count" class="mb-4"></h5>
+        <div id="my-feeds" class="feed-grid"></div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    /* ───────────────── JWT 인증 ───────────────── */
+    let token;
+    (async()=>{
+        token = sessionStorage.getItem("jwt");
+        if(!token) return location.replace("/");
+
+        const ok = await fetch("/page/authenticate",
+            {method:"POST",headers:{Authorization:`Bearer ${token}`}})
+            .then(r=>r.ok).catch(()=>false);
+        if(!ok) return location.replace("/");
+
+        document.body.classList.remove("hidden");
+        loadMyFeeds();
+    })();
+
+    /* ───────── 내 피드 조회 ───────── */
+    async function loadMyFeeds(){
+        try{
+            const r = await fetch("/feeds/my-feed",
+                {headers:{Authorization:`Bearer ${token}`}});
+            const {statusCode,data} = await r.json();
+            if(statusCode!==200) throw 0;
+
+            document.getElementById("feed-count").innerText =
+                `총 ${data.count} 개의 피드`;
+
+            const grid = document.getElementById("my-feeds");
+            grid.innerHTML="";
+            data.feeds.forEach(f=>{
+                const a=document.createElement("a");
+                a.href=`/page/detail-feed?id=${f.feedId}`;
+                a.innerHTML=`<img src="/images/${f.imgName}" class="myfeed-img" alt="feed">`;
+                grid.appendChild(a);
+            });
+        }catch{
+            alert("내 피드를 불러오지 못했습니다.");
+            location.replace("/page/main");
+        }
+    }
+
+    /* 로그아웃 */
+    function logout(){
+        sessionStorage.removeItem("jwt");
+        location.replace("/");
+    }
+</script>
+</body>
+</html>

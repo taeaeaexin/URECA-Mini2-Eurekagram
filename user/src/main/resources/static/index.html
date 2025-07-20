@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/index.css">
+</head>
+<body>
+
+<div class="page-container">
+    <div class="login-wrapper">
+        <!-- 왼쪽 이미지 -->
+        <div class="login-left">
+            <img src="/logo/login_logo_6.svg" alt="홍보 이미지">
+        </div>
+
+        <!-- 오른쪽 로그인 -->
+        <div class="login-right">
+            <div class="login-box">
+                <img class="brand-logo" src="/logo/login_logo_8.png" alt="Eureka Gram 로고">
+
+                <input type="email" id="email" placeholder="이메일 또는 사용자 이름" />
+                <input type="password" id="password" placeholder="비밀번호" />
+
+                <button class="login-btn" onclick="login()">로그인</button>
+
+                <div class="divider">
+                    <hr><span>또는</span><hr>
+                </div>
+
+                <div class="help-links">
+                    계정이 없으신가요? <a href="/page/join">가입하기</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 하단 안내 문구 -->
+    <footer class="page-footer">
+        This space is for members of the Eureka Bootcamp. Enjoy it freely!
+    </footer>
+</div>
+
+<script>
+    async function login() {
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        const response = await fetch("/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ email, password })
+        });
+
+        const result = await response.json();
+
+        if (result.statusCode === 200) {
+            sessionStorage.setItem("jwt", result.data.token);
+            window.location.href = "/page/main";
+        } else {
+            alert("ID 혹은 PW를 확인해 주세요.");
+        }
+    }
+</script>
+
+</body>
+</html>
